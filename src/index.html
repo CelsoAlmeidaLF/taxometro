@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.5.3" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.5.4" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -83,7 +83,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 .bottom-nav .nav-item{flex:1;text-align:center;padding:8px;border-radius:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);cursor:pointer;background:none;border:none}
 .bottom-nav .nav-item .ic{display:flex;justify-content:center;margin-bottom:3px}.ico{display:block;flex-shrink:0}.alert-icon{padding-top:1px}.ico-warn{color:var(--warn)}.ico-empty{color:var(--ink-dim);margin:0 auto}
 .bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
-#installBtn{display:none;margin-top:14px}
 </style>
 <link rel="stylesheet" href="secure-ui.css">
 </head>
@@ -99,7 +98,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
    <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
   </div>
  </header>
-  <button type="button" id="installBtn" class="btn btn-secondary">Instalar app</button>
 
   <div class="seg" role="group" aria-label="Operação">
    <button type="button" class="btn" id="mSell" aria-pressed="true">Vou vender</button>
@@ -359,10 +357,6 @@ document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEven
 
 // ---- PWA: service worker e botão de instalar ----
 if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
-let deferredPrompt;
-addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='inline-block'});
-document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBtn').style.display='none'});
-addEventListener('appinstalled',()=>{document.getElementById('installBtn').style.display='none'});
 
 // ---- Navegação entre telas ----
 (()=>{const views={calc:document.getElementById('viewCalc'),cat:document.getElementById('viewCat')};

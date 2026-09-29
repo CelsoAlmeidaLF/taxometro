@@ -1,5 +1,5 @@
 // Troque a versão sempre que atualizar os arquivos, para o app baixar a nova versão.
-const CACHE = 'tributos-v1.5.3';
+const CACHE = 'tributos-v1.5.4';
 const FONTS = 'tributos-fontes';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-32.png', './secure-vault.js', './secure-ui.js', './secure-ui.css', './financ-icons.js'];
 
