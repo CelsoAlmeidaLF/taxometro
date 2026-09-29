@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.5.1" data-vault-app="taxometro" data-vault-name="Taxômetro" data-vault-themes="system dark light">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.5.2" data-vault-app="taxometro" data-vault-name="Taxômetro" data-vault-themes="system dark light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -141,18 +141,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
   <p class="note">Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação, porque são compensáveis.</p>
  </section>
 
- <section id="viewSet" hidden aria-labelledby="set-title">
- <header class="app-head">
-  <div class="vp-bar" data-vault-profile-slot></div>
-  <div class="app-head-text">
-   <div class="eyebrow">TAXÔMETRO · CONFIGURAÇÕES</div>
-   <h1 id="set-title">Ajustes</h1>
-   <p class="lede">Segurança, bloqueio e dados deste aparelho.</p>
-  </div>
- </header>
-  <div id="settingsMount"></div>
- </section>
-
  <section id="viewCat" hidden aria-labelledby="cat-title">
  <header class="app-head">
   <div class="vp-bar" data-vault-profile-slot></div>
@@ -180,7 +168,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
  <div class="bottom-nav">
   <button type="button" class="nav-item active" data-view="calc"><span class="ic"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><rect x="8" y="5.5" width="8" height="4" rx="1"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/></svg></span>Calculadora</button>
   <button type="button" class="nav-item" data-view="cat"><span class="ic"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8.5 7.5h7M8.5 11h5"/></svg></span>Catálogo</button>
-  <button type="button" class="nav-item" data-view="set"><span class="ic"><i class="ico" data-icon="settings" data-size="22"></i></span>Ajustes</button>
  </div>
 </nav>
 <script src="financ-icons.js"></script>
@@ -379,8 +366,8 @@ document.getElementById('installBtn').addEventListener('click',async()=>{if(!def
 addEventListener('appinstalled',()=>{document.getElementById('installBtn').style.display='none'});
 
 // ---- Navegação entre telas ----
-(()=>{const views={calc:document.getElementById('viewCalc'),cat:document.getElementById('viewCat'),set:document.getElementById('viewSet')};
- const go=v=>{if(!views[v])v='calc';Object.entries(views).forEach(([k,el])=>el.hidden=k!==v);document.querySelectorAll('.nav-item').forEach(b=>{const on=b.dataset.view===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});if(v==='set')window.vaultReady.then(()=>FinancSettings.mount(document.getElementById('settingsMount')));scrollTo(0,0)};
+(()=>{const views={calc:document.getElementById('viewCalc'),cat:document.getElementById('viewCat')};
+ const go=v=>{if(!views[v])v='calc';Object.entries(views).forEach(([k,el])=>el.hidden=k!==v);document.querySelectorAll('.nav-item').forEach(b=>{const on=b.dataset.view===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});scrollTo(0,0)};
  document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.view);go(b.dataset.view)}));
  go(location.hash.slice(1));})();
 </script>
