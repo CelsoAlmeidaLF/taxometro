@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.4.1" data-vault-app="taxometro" data-vault-name="Taxômetro" data-vault-lock="top-right">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.5.0" data-vault-app="taxometro" data-vault-name="Taxômetro" data-vault-themes="system dark light">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -19,6 +19,8 @@
   <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--bg:#0E1210;--surface:#171D1A;--surface-2:#202824;--line:#2C3733;--ink:#EAF0EC;--ink-dim:#8FA098;--accent:#6FCF97;--accent-dim:#4A8A67;--up:#6FCF97;--down:#E08585;--warn:#E0C185;--info:#7FA6CF;--mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;--sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+@media (prefers-color-scheme:light){:root:not([data-theme="dark"]){--bg:#F7FAF8;--surface:#FFFFFF;--surface-2:#EFF4F0;--line:#DCE6E0;--ink:#16211B;--ink-dim:#667F72;--accent:#2E8B57;--accent-dim:#4EA976;--up:#2E8B57;--down:#C1584A;--warn:#9A7B2E;--info:#3F6E9E}}
+:root[data-theme="light"]{--bg:#F7FAF8;--surface:#FFFFFF;--surface-2:#EFF4F0;--line:#DCE6E0;--ink:#16211B;--ink-dim:#667F72;--accent:#2E8B57;--accent-dim:#4EA976;--up:#2E8B57;--down:#C1584A;--warn:#9A7B2E;--info:#3F6E9E}
 *{box-sizing:inherit}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
 .page{max-width:480px;margin:0 auto;padding:24px 18px calc(110px + env(safe-area-inset-bottom,0px))}
@@ -82,26 +84,22 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 .bottom-nav .nav-item{flex:1;text-align:center;padding:8px;border-radius:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);cursor:pointer;background:none;border:none}
 .bottom-nav .nav-item .ic{display:flex;justify-content:center;margin-bottom:3px}.ico{display:block;flex-shrink:0}.alert-icon{padding-top:1px}.ico-warn{color:var(--warn)}.ico-empty{color:var(--ink-dim);margin:0 auto}
 .bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
-.brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}.brand img{width:40px;height:40px;border-radius:10px;display:block}.brand-name{font-size:16px;font-weight:700;line-height:1.1}.brand .eyebrow{margin:2px 0 0}
 #installBtn{display:none;margin-top:14px}
 </style>
 <link rel="stylesheet" href="secure-ui.css">
-<style>
-/* Botão de menu (3 pontos) ao lado do título de cada tela. */
-.page{position:relative}
-.page>.vp-bar{position:absolute;top:24px;left:18px}
-.page:has(#vaultProfileBtn)>section>.brand,.page:has(#vaultProfileBtn)>section:not(:has(>.brand))>:is(.eyebrow,h1,.lede){margin-left:52px}
-</style>
 </head>
 <body>
 <div class="page">
 
- <div class="vp-bar" data-vault-profile-slot></div>
-
  <section id="viewCalc" aria-labelledby="calc-title">
-  <div class="brand"><img src="icon-192.png" alt="" width="40" height="40"><div><div class="brand-name">Taxômetro</div><div class="eyebrow">TRIBUTOS · 2026</div></div></div>
-  <h1 id="calc-title">Preço com e sem impostos</h1>
-  <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
+ <header class="app-head">
+  <div class="vp-bar" data-vault-profile-slot></div>
+  <div class="app-head-text">
+   <div class="eyebrow">TAXÔMETRO · TRIBUTOS 2026</div>
+   <h1 id="calc-title">Preço com e sem impostos</h1>
+   <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
+  </div>
+ </header>
   <button type="button" id="installBtn" class="btn btn-secondary">Instalar app</button>
 
   <div class="seg" role="group" aria-label="Operação">
@@ -144,16 +142,26 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
  </section>
 
  <section id="viewSet" hidden aria-labelledby="set-title">
-  <div class="eyebrow">CONFIGURAÇÕES</div>
-  <h1 id="set-title">Ajustes</h1>
-  <p class="lede">Segurança, bloqueio e dados deste aparelho.</p>
+ <header class="app-head">
+  <div class="vp-bar" data-vault-profile-slot></div>
+  <div class="app-head-text">
+   <div class="eyebrow">TAXÔMETRO · CONFIGURAÇÕES</div>
+   <h1 id="set-title">Ajustes</h1>
+   <p class="lede">Segurança, bloqueio e dados deste aparelho.</p>
+  </div>
+ </header>
   <div id="settingsMount"></div>
  </section>
 
  <section id="viewCat" hidden aria-labelledby="cat-title">
-  <div class="eyebrow">CATÁLOGO · atualizado 22/09/2026</div>
-  <h1 id="cat-title">Taxas e tributos do Brasil</h1>
-  <p class="lede">Principais tributos federais, estaduais e municipais, com alíquotas gerais e a base de cálculo.</p>
+ <header class="app-head">
+  <div class="vp-bar" data-vault-profile-slot></div>
+  <div class="app-head-text">
+   <div class="eyebrow">TAXÔMETRO · CATÁLOGO · 22/09/2026</div>
+   <h1 id="cat-title">Taxas e tributos do Brasil</h1>
+   <p class="lede">Principais tributos federais, estaduais e municipais, com alíquotas gerais e a base de cálculo.</p>
+  </div>
+ </header>
   <div class="alert alert-warn"><span class="alert-icon"><svg class="ico ico-warn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></svg></span><span>Taxa, imposto e contribuição são tipos diferentes de tributo. Estados e 5.570 municípios têm leis próprias, e o valor final depende do bem, renda, atividade ou serviço. Confirme o caso concreto no órgão arrecadador.</span></div>
   <section class="filters">
    <input id="q" type="search" placeholder="Buscar nome, UF ou valor…" aria-label="Buscar">
