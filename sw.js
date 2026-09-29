@@ -1,5 +1,5 @@
 // Troque a versão sempre que atualizar os arquivos, para o app baixar a nova versão.
-const CACHE = 'tributos-v10-tab-takeover';
+const CACHE = 'tributos-v12';
 const FONTS = 'tributos-fontes';
 const FILES = ['./', './index.html', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-32.png', './secure-vault.js', './secure-ui.js', './secure-ui.css', './financ-icons.js'];
 
@@ -22,7 +22,10 @@ self.addEventListener('fetch', e => {
       fetch(e.request).then(res => { c.put(e.request, res.clone()); return res; }))));
     return;
   }
-  // Arquivos do app: primeiro o cache; links externos passam direto.
+  // Arquivos do app: rede primeiro (atualização imediata), cache quando offline; links externos passam direto.
   if (url.origin !== location.origin) return;
-  e.respondWith(caches.match(e.request, { ignoreSearch: true }).then(hit => hit || fetch(e.request)));
+  e.respondWith(fetch(e.request).then(res => {
+    if (res && res.status === 200) { const copy = res.clone(); caches.open(CACHE).then(c => c.put(e.request, copy)); }
+    return res;
+  }).catch(() => caches.match(e.request, { ignoreSearch: true })));
 });
