@@ -90,7 +90,7 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 /* Botão de menu (3 pontos) ao lado do título de cada tela. */
 .page{position:relative}
 .page>.vp-bar{position:absolute;top:24px;left:18px}
-.page:has(#vaultProfileBtn)>section>:is(.brand,.eyebrow,h1,.lede){margin-left:52px}
+.page:has(#vaultProfileBtn)>section>.brand,.page:has(#vaultProfileBtn)>section:not(:has(>.brand))>:is(.eyebrow,h1,.lede){margin-left:52px}
 </style>
 </head>
 <body>
