@@ -1,0 +1,371 @@
+<!doctype html>
+<html lang="pt-BR" class="vault-locked" data-vault-app="taxometro" data-vault-name="Taxômetro" data-vault-lock="top-right">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#0E1210">
+  <meta name="description" content="Calculadora de preço com e sem impostos e catálogo de tributos do Brasil">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Taxômetro">
+  <title>Taxômetro — preço com e sem impostos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0E1210;--surface:#171D1A;--surface-2:#202824;--line:#2C3733;--ink:#EAF0EC;--ink-dim:#8FA098;--accent:#6FCF97;--accent-dim:#4A8A67;--up:#6FCF97;--down:#E08585;--warn:#E0C185;--info:#7FA6CF;--mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;--sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:inherit}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+.page{max-width:480px;margin:0 auto;padding:24px 18px calc(110px + env(safe-area-inset-bottom,0px))}
+.eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:6px}
+h1{font-size:26px;font-weight:700;margin:0 0 4px}
+.lede{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin:0 0 8px;line-height:1.5}
+h2{font-size:15px;font-weight:600;color:var(--ink-dim);margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.col-gap{display:flex;flex-direction:column;gap:10px}
+.row-gap{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+.btn{font-family:var(--mono);font-size:14px;padding:12px 18px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;display:inline-block}
+.btn-primary{background:var(--accent);color:var(--bg);font-weight:600}
+.btn-secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
+.btn-ghost{background:none;color:var(--accent);padding:8px 0}
+.seg{display:flex;gap:8px;margin:18px 0 14px}
+.seg .btn{flex:1;background:var(--surface-2);color:var(--ink-dim);border:1px solid var(--line)}
+.seg .btn[aria-pressed=true]{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
+label.field-label,.cgrid label{display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-width:0;font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+select{font-size:14px!important;text-overflow:ellipsis}
+input[type=text],input[type=number],input[type=search],select{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:var(--mono);font-size:15px;padding:11px 12px}
+input[type=search]{border-radius:999px;padding-left:16px}
+input::placeholder{color:var(--ink-dim);opacity:.7}
+:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.cgrid .wide,.cgrid .glabel{grid-column:1/-1}
+.cgrid .glabel{margin:6px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px;font-weight:600;color:var(--ink)}
+.hide{display:none!important}
+.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-family:var(--mono);font-size:11px;white-space:nowrap}
+.badge-pos{background:rgba(111,207,151,.15);color:var(--up)}.badge-neg{background:rgba(224,133,133,.15);color:var(--down)}.badge-warn{background:rgba(224,193,133,.15);color:var(--warn)}.badge-info{background:rgba(127,166,207,.15);color:var(--info)}.badge-neutral{background:var(--surface-2);color:var(--ink-dim);border:1px solid var(--line)}
+.alert{display:flex;gap:10px;align-items:flex-start;padding:13px 14px;border-radius:12px;font-size:13.5px;line-height:1.45}
+.alert-warn{background:rgba(224,193,133,.12);border:1px solid rgba(224,193,133,.3)}
+.alert-info{background:rgba(127,166,207,.12);border:1px solid rgba(127,166,207,.3)}
+.alert-error{background:rgba(224,133,133,.12);border:1px solid rgba(224,133,133,.3)}
+.result{margin-top:16px}
+.result-label{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
+.result-main{font-family:var(--mono);font-size:clamp(30px,9vw,40px);font-weight:600;color:var(--accent);margin:6px 0 4px;letter-spacing:-.5px}
+.result-sub{font-family:var(--mono);font-size:12px;color:var(--ink-dim);line-height:1.5}
+table.data-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
+table.data-table td{padding:10px 6px;border-bottom:1px solid var(--line)}
+table.data-table td:last-child{text-align:right;font-family:var(--mono);white-space:nowrap}
+table.data-table tr.sub td{color:var(--ink-dim)}
+table.data-table tr.total td{font-weight:600}
+table.data-table tr.total td:last-child{color:var(--accent)}
+table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-dim);font-family:var(--mono)}
+.note{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.55;margin:14px 0 0}
+.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 4px}
+.filters input{grid-column:1/-1}
+.count{font-family:var(--mono);font-size:12px;color:var(--accent);margin:12px 2px}
+#rows{display:flex;flex-direction:column;gap:10px}
+.tax{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
+.tax-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
+.tax .info{min-width:0}
+.tax .name{font-size:15px;font-weight:600}
+.meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);margin-top:2px}
+.tax-value{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent);margin:10px 0 2px}
+.tax-desc{font-size:13.5px;line-height:1.45;color:var(--ink);margin:8px 0 2px}
+.tax-link{font-size:12.5px}
+.empty-state{text-align:center;padding:30px 16px}.empty-state .icon{font-size:34px;margin-bottom:10px}.empty-state .title{font-size:16px;font-weight:600;margin-bottom:4px}.empty-state .desc{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim)}
+.nav-wrap{position:fixed;left:0;right:0;bottom:0;padding:0 14px calc(12px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:20}
+.bottom-nav{pointer-events:auto;max-width:452px;margin:0 auto;display:flex;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
+.bottom-nav .nav-item{flex:1;text-align:center;padding:8px;border-radius:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);cursor:pointer;background:none;border:none}
+.bottom-nav .nav-item .ic{display:flex;justify-content:center;margin-bottom:3px}.ico{display:block;flex-shrink:0}.alert-icon{padding-top:1px}.ico-warn{color:var(--warn)}.ico-empty{color:var(--ink-dim);margin:0 auto}
+.bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
+.brand{display:flex;align-items:center;gap:12px;margin-bottom:14px}.brand img{width:40px;height:40px;border-radius:10px;display:block}.brand-name{font-size:16px;font-weight:700;line-height:1.1}.brand .eyebrow{margin:2px 0 0}
+#installBtn{display:none;margin-top:14px}
+</style>
+<link rel="stylesheet" href="secure-ui.css">
+</head>
+<body>
+<div class="page">
+
+ <section id="viewCalc" aria-labelledby="calc-title">
+  <div class="brand"><img src="icon-192.png" alt="" width="40" height="40"><div><div class="brand-name">Taxômetro</div><div class="eyebrow">TRIBUTOS · 2026</div></div></div>
+  <h1 id="calc-title">Preço com e sem impostos</h1>
+  <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
+  <button type="button" id="installBtn" class="btn btn-secondary">Instalar app</button>
+
+  <div class="seg" role="group" aria-label="Operação">
+   <button type="button" class="btn" id="mSell" aria-pressed="true">Vou vender</button>
+   <button type="button" class="btn" id="mBuy" aria-pressed="false">Vou comprar</button>
+  </div>
+
+  <div class="card">
+   <div class="cgrid">
+    <label class="wide"><span id="lblValue">Custo do produto (R$)</span><input id="cValue" type="number" inputmode="decimal" min="0" step="0.01" value="42"></label>
+    <label class="wide">Regime / origem<select id="cReg">
+     <option value="presumido">Lucro Presumido</option>
+     <option value="real">Lucro Real</option>
+     <option value="simples">Simples Nacional</option>
+     <option value="import">Importação (Remessa Conforme)</option>
+    </select></label>
+    <label>UF da operação<select id="cUf"></select></label>
+    <label id="wIcms">ICMS (%)<input id="cIcms" type="number" inputmode="decimal" min="0" max="99" step="0.1"></label>
+    <label id="wPis">PIS/Cofins (%)<input id="cPis" type="number" inputmode="decimal" min="0" max="99" step="0.01"></label>
+    <label id="wIpi">IPI (%), por fora<input id="cIpi" type="number" inputmode="decimal" min="0" max="300" step="0.1" value="0"></label>
+    <label id="wSimp" class="hide">Alíquota do Simples (%)<input id="cSimp" type="number" inputmode="decimal" min="0" max="99" step="0.01" value="4"></label>
+    <label id="wII" class="hide">Imposto de importação (%)<input id="cII" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="20"></label>
+    <label class="sellOnly" id="wMargem">Margem de lucro (% do preço)<input id="cMargem" type="number" inputmode="decimal" min="0" max="99" step="0.5" value="0"></label>
+    <p class="glabel sellOnly">Custos de venda</p>
+    <label class="sellOnly">Comissão marketplace (%)<input id="cCom" type="number" inputmode="decimal" min="0" max="99" step="0.1" value="0" placeholder="ex.: 12"></label>
+    <label class="sellOnly">Taxa de pagamento (%)<input id="cPag" type="number" inputmode="decimal" min="0" max="99" step="0.01" value="0" placeholder="cartão, Pix"></label>
+    <label class="sellOnly">Tarifa fixa por venda (R$)<input id="cFixo" type="number" inputmode="decimal" min="0" step="0.01" value="0"></label>
+    <label class="sellOnly">Frete pago por você (R$)<input id="cFrete" type="number" inputmode="decimal" min="0" step="0.01" value="0"></label>
+   </div>
+  </div>
+
+  <h2>Resultado</h2>
+  <div class="card result" aria-live="polite">
+   <div class="result-label" id="rLabel"></div>
+   <div class="result-main" id="rMain"></div>
+   <div class="result-sub" id="rSub"></div>
+   <table class="data-table"><tbody id="rRows"></tbody></table>
+  </div>
+  <p class="note">Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação, porque são compensáveis.</p>
+ </section>
+
+ <section id="viewSet" hidden aria-labelledby="set-title">
+  <div class="eyebrow">CONFIGURAÇÕES</div>
+  <h1 id="set-title">Ajustes</h1>
+  <p class="lede">Segurança, bloqueio e dados deste aparelho.</p>
+  <div id="settingsMount"></div>
+ </section>
+
+ <section id="viewCat" hidden aria-labelledby="cat-title">
+  <div class="eyebrow">CATÁLOGO · atualizado 22/09/2026</div>
+  <h1 id="cat-title">Taxas e tributos do Brasil</h1>
+  <p class="lede">Principais tributos federais, estaduais e municipais, com alíquotas gerais e a base de cálculo.</p>
+  <div class="alert alert-warn"><span class="alert-icon"><svg class="ico ico-warn" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.3 3.9 2.4 17.6A2 2 0 0 0 4.1 20.6h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4.5M12 17h.01"/></svg></span><span>Taxa, imposto e contribuição são tipos diferentes de tributo. Estados e 5.570 municípios têm leis próprias, e o valor final depende do bem, renda, atividade ou serviço. Confirme o caso concreto no órgão arrecadador.</span></div>
+  <section class="filters">
+   <input id="q" type="search" placeholder="Buscar nome, UF ou valor…" aria-label="Buscar">
+   <select id="sphere" aria-label="Esfera"><option value="">Todas as esferas</option><option>NF-e / Comércio exterior</option><option>Federal</option><option>Estadual</option><option>Municipal</option></select>
+   <select id="type" aria-label="Tipo"><option value="">Todos os tipos</option><option>Imposto</option><option>Taxa</option><option>Contribuição</option><option>Em transição</option></select>
+   <select id="uf" aria-label="UF" style="grid-column:1/-1"><option value="">Todas as UFs</option></select>
+  </section>
+  <div class="count" id="count"></div>
+  <div id="rows"></div>
+  <p class="note">Material informativo, não substitui consulta fiscal, contábil ou jurídica. Regimes especiais, benefícios, fundos estaduais, substituição tributária, isenções e regras setoriais podem alterar o resultado.</p>
+ </section>
+
+</div>
+
+<nav class="nav-wrap" aria-label="Telas">
+ <div class="bottom-nav">
+  <button type="button" class="nav-item active" data-view="calc"><span class="ic"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><rect x="5" y="2.5" width="14" height="19" rx="2.5"/><rect x="8" y="5.5" width="8" height="4" rx="1"/><path d="M8.5 13h.01M12 13h.01M15.5 13h.01M8.5 16.5h.01M12 16.5h.01M15.5 16.5h.01"/></svg></span>Calculadora</button>
+  <button type="button" class="nav-item" data-view="cat"><span class="ic"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8.5 7.5h7M8.5 11h5"/></svg></span>Catálogo</button>
+  <button type="button" class="nav-item" data-view="set"><span class="ic"><i class="ico" data-icon="settings" data-size="22"></i></span>Ajustes</button>
+ </div>
+</nav>
+<script src="financ-icons.js"></script>
+<script src="secure-vault.js"></script>
+<script src="secure-ui.js"></script>
+<script>
+const rows=[];
+const add=(sphere,uf,name,type,value,base,desc,source)=>rows.push({sphere,uf,name,type,value,base,desc,source});
+const rfb='https://www.gov.br/receitafederal/pt-br';
+[
+['IRPF','Imposto','0% a 27,5%','Renda tributável mensal/anual','Progressivo; deduções e faixa de isenção alteram o valor final.'],
+['IRPJ','Imposto','15% + adicional de 10%','Lucro real, presumido ou arbitrado','Adicional sobre parcela do lucro que excede o limite legal.'],
+['IPI','Imposto','0% a 30% ou mais','Valor do produto industrializado','Varia conforme a classificação TIPI; diversos produtos têm alíquota zero.'],
+['IOF — crédito','Imposto','variável por operação','Valor e prazo da operação','Alíquotas e adicionais variam por modalidade, prazo e mutuário.'],
+['IOF — câmbio','Imposto','0% a 3,5% em regra','Valor convertido','Depende da finalidade da operação; regras podem mudar por decreto.'],
+['IOF — seguros','Imposto','0% a 7,38%','Prêmio do seguro','Há operações com alíquota zero ou reduzida.'],
+['IOF — títulos e valores','Imposto','0% a 1,5% ao dia, limitado','Valor da operação/rendimento','Incidência depende do ativo e do prazo.'],
+['ITR','Imposto','0,03% a 20%','Valor da terra nua tributável','Progressivo conforme área e grau de utilização do imóvel rural.'],
+['II — Imposto de Importação','Imposto','0% a 35% em regra','Valor aduaneiro','Varia por NCM e regime; remessas internacionais podem seguir regime específico.'],
+['IE — Imposto de Exportação','Imposto','0% na maioria; variável','Preço normal do produto exportado','Aplicado apenas a produtos/operações definidos.'],
+['PIS/Pasep','Contribuição','0,65% ou 1,65%','Receita/faturamento','Regime cumulativo ou não cumulativo; há regras monofásicas e setoriais.'],
+['Cofins','Contribuição','3% ou 7,6%','Receita/faturamento','Regime cumulativo ou não cumulativo; exceções setoriais.'],
+['CSLL','Contribuição','9% em regra','Lucro líquido ajustado','Instituições financeiras podem ter alíquotas superiores.'],
+['INSS — empregado','Contribuição','7,5% a 14%','Salário de contribuição','Progressivo por faixas até o teto previdenciário.'],
+['INSS — contribuinte individual','Contribuição','5%, 11% ou 20%','Salário de contribuição','Depende do plano e das condições do segurado.'],
+['Contribuição patronal previdenciária','Contribuição','20% em regra + RAT/terceiros','Folha/remuneração','Pode haver substituição pela CPRB ou regras específicas.'],
+['CIDE-Combustíveis','Contribuição','valor específico por unidade','Volume importado/comercializado','Valores dependem do combustível e de atos normativos.'],
+['CIDE-Royalties','Contribuição','10%','Remessas/contratos abrangidos','Incide em hipóteses legais de tecnologia, royalties e serviços técnicos.'],
+['FGTS','Contribuição','8% em regra','Remuneração do empregado','Depósito do empregador; 2% para aprendiz e regras próprias em contratos específicos.'],
+['Salário-Educação','Contribuição','2,5%','Folha de salários','Cobrado de empresas vinculadas à Previdência, ressalvadas exceções.'],
+['CBS — ano-teste 2026','Em transição','0,9%','Operações com bens e serviços','Compensável com PIS/Cofins em 2026 quando cumpridas as obrigações.'],
+['IBS — ano-teste 2026','Em transição','0,1%','Operações com bens e serviços','Alíquota teste; transição da reforma tributária do consumo.']
+].forEach(x=>add('Federal','BR',...x,rfb));
+
+const states=[
+['AC','Acre','19%','2%','2% a 8%'],['AL','Alagoas','20%','2,75% a 3%','2% doação / 4% herança'],['AP','Amapá','18%','3%','2% doação / 4% herança'],['AM','Amazonas','20%','1,5% a 2%','2% a 8%'],['BA','Bahia','20,5%','2,5% a 3%','3,5% a 8%'],['CE','Ceará','20%','2,5% a 3,5%','2% a 8%'],['DF','Distrito Federal','20%','3,5%','4% a 6%'],['ES','Espírito Santo','17%','2%','4%'],['GO','Goiás','19%','3% a 3,75%','2% a 8%'],['MA','Maranhão','23%','2,5% a 3%','1% a 7%'],['MT','Mato Grosso','17%','2% a 4%','2% a 8%'],['MS','Mato Grosso do Sul','17%','3% a 4,5%','3% doação / 6% herança'],['MG','Minas Gerais','18%','4%','5%'],['PA','Pará','19%','2,5%','2% a 6%'],['PB','Paraíba','20%','2,5%','2% a 8%'],['PR','Paraná','19,5%','3,5%','4%'],['PE','Pernambuco','20,5%','2,4% a 3%','2% a 8%'],['PI','Piauí','22,5%','2,5% a 3%','2% a 6%'],['RJ','Rio de Janeiro','22%','4%','4% a 8%'],['RN','Rio Grande do Norte','20%','3%','3% a 6%'],['RS','Rio Grande do Sul','17%','3%','3% a 6%'],['RO','Rondônia','19,5%','3%','2% a 4%'],['RR','Roraima','20%','3%','4%'],['SC','Santa Catarina','17%','2%','1% a 8%'],['SP','São Paulo','18%','4%','4%'],['SE','Sergipe','20%','2,5% a 3%','2% a 8%'],['TO','Tocantins','20%','2% a 2,5%','2% a 8%']
+];
+states.forEach(([uf,state,icms,ipva,itcmd])=>{
+ const faz=`https://www.google.com/search?q=site%3A${uf.toLowerCase()}.gov.br+secretaria+fazenda+tributos`;
+ add('Estadual',uf,'ICMS — alíquota interna geral','Imposto',icms,'Valor da operação/circulação',`Alíquota modal de ${state}; produto, serviço, FCP/FECOEP, substituição tributária e benefício fiscal podem mudar a carga.`,faz);
+ add('Estadual',uf,'IPVA — automóveis de passeio','Imposto',ipva,'Valor venal do veículo',`Faixa de referência em ${state}; tipo, potência, combustível, idade, faixa de valor e isenções podem alterar a alíquota.`,faz);
+ add('Estadual',uf,'ITCMD/ITCD — heranças e doações','Imposto',itcmd,'Valor transmitido/doado',`Alíquota vigente ou faixa progressiva de referência em ${state}; limites, faixas e isenções dependem da lei estadual.`,faz);
+ add('Estadual',uf,'Taxas estaduais diversas','Taxa','Valor fixo ou unidade fiscal estadual','Serviço, licença ou fiscalização',`Inclui, conforme a UF, taxas judiciárias, segurança pública, fiscalização, licenciamento ambiental, registros e serviços. Não há valor único; consultar a tabela anual de ${state}.`,faz);
+});
+
+const municipal=[
+['ISS/ISSQN','Imposto','2% a 5%','Preço do serviço','A alíquota depende do serviço e da lei do município; regras nacionais fixam limites.'],
+['IPTU','Imposto','variável por município','Valor venal do imóvel','Pode ser progressivo por valor, uso, localização ou tempo; há descontos e isenções locais.'],
+['ITBI','Imposto','geralmente 2% a 3%; variável','Valor da transmissão imobiliária','Alíquota e base são definidas pelo município, observadas as regras constitucionais e judiciais.'],
+['Taxa de coleta de lixo/resíduos','Taxa','valor fixo ou por critérios locais','Custo/uso do serviço divisível','Pode considerar área, frequência, uso e categoria do imóvel. Nem todo município cobra separadamente.'],
+['Taxa de licença/localização e funcionamento','Taxa','valor anual variável','Atividade, área e risco','Cobrança municipal para licenciamento/fiscalização de estabelecimentos.'],
+['Taxa de vigilância sanitária','Taxa','valor variável','Atividade e porte','Aplicável a atividades sujeitas à fiscalização sanitária local.'],
+['Taxa de publicidade/anúncios','Taxa','valor variável','Tipo, dimensão e período','Cobrança por licença/fiscalização de anúncios, conforme código tributário municipal.'],
+['Taxa de obras e habite-se','Taxa','valor variável','Área, tipo e complexidade','Análise, licença, vistoria e emissão de documentos de obra.'],
+['Taxa ambiental municipal','Taxa','valor variável','Atividade, porte e impacto','Licença ou fiscalização ambiental quando houver competência municipal.'],
+['COSIP/CIP — iluminação pública','Contribuição','valor/faixa local','Consumo, ligação ou critério municipal','Custeio da iluminação pública; normalmente cobrada na fatura de energia.']
+];
+municipal.forEach(x=>add('Municipal','Município',...x,'https://www.planalto.gov.br/ccivil_03/constituicao/constituicao.htm'));
+
+// Tributos e valores encontrados em documentos fiscais e operações de comércio exterior.
+const trade=[
+['ICMS próprio na NF-e','Imposto','17% a 23% na alíquota modal; varia por UF/produto','Valor da operação, com cálculo “por dentro”','Aparece em venda de mercadoria, transporte interestadual/intermunicipal e comunicação. Pode haver redução, diferimento, isenção ou crédito.','https://www.nfe.fazenda.gov.br/portal/principal.aspx'],
+['ICMS interestadual','Imposto','4%, 7% ou 12%','Valor da operação','4% geralmente para bens importados; 7% ou 12% conforme origem e destino. DIFAL pode complementar a carga no destino.','https://www.confaz.fazenda.gov.br/legislacao'],
+['DIFAL do ICMS','Imposto','Diferença entre alíquota interna e interestadual','Valor da operação','Aplicável nas hipóteses legais de operação destinada a consumidor final em outra UF.','https://www.confaz.fazenda.gov.br/legislacao'],
+['ICMS-ST','Imposto','MVA/PMPF e alíquota conforme produto e UF','Base presumida de venda ao consumidor','Substituição tributária: um contribuinte recolhe antecipadamente o ICMS de etapas posteriores.','https://www.confaz.fazenda.gov.br/legislacao'],
+['FCP/FECOEP','Adicional','0% a 4%, conforme UF e produto','Base do ICMS','Adicional estadual destinado ao combate à pobreza; pode aparecer como FCP próprio ou FCP-ST.','https://www.confaz.fazenda.gov.br/legislacao'],
+['IPI na NF-e','Imposto','0% a 30% ou mais, conforme TIPI/NCM','Valor do produto + despesas tributáveis','Incide sobre industrialização e importação. Estabelecimentos equiparados a industrial também podem destacar IPI.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/ipi'],
+['PIS/Pasep na NF-e','Contribuição','0,65% cumulativo ou 1,65% não cumulativo','Receita da operação','Pode ter alíquota zero, suspensão, incidência monofásica ou regime específico.','https://www.gov.br/receitafederal/pt-br'],
+['Cofins na NF-e','Contribuição','3% cumulativo ou 7,6% não cumulativo','Receita da operação','Pode ter alíquota zero, suspensão, incidência monofásica ou regime específico.','https://www.gov.br/receitafederal/pt-br'],
+['ISS na NFS-e','Imposto','2% a 5%','Preço do serviço','Tributo municipal destacado na nota de serviço; pode ser retido pelo tomador conforme o serviço e o município.','https://www.gov.br/nfse/pt-br'],
+['IRRF em nota de serviço','Imposto retido','1%, 1,5% ou outras alíquotas','Pagamento ou crédito pelo serviço','Retenção depende da natureza do serviço, do prestador e do tomador.','https://www.gov.br/receitafederal/pt-br'],
+['PIS/Cofins/CSLL retidos — CSRF','Contribuição retida','4,65% em regra (0,65% + 3% + 1%)','Pagamento por serviços abrangidos','Retenção federal conjunta em hipóteses legais; existem dispensas e tratamentos específicos.','https://www.gov.br/receitafederal/pt-br'],
+['INSS retido em serviço','Contribuição retida','11% em regra; hipóteses com 3,5%','Valor bruto da nota/fatura, com exclusões legais','Comum em cessão de mão de obra e empreitada; depende do regime previdenciário da contratada.','https://www.gov.br/receitafederal/pt-br'],
+['IBPT / Valor aproximado dos tributos','Informativo','Percentual estimado variável','Valor total da venda','O campo “valor aproximado dos tributos” não é imposto adicional: informa uma estimativa da carga embutida no preço.','https://www.planalto.gov.br/ccivil_03/_ato2011-2014/2012/lei/l12741.htm'],
+['CBS na nota — teste 2026','Em transição','0,9%','Valor da operação','Campo da reforma tributária. Em 2026, o valor é compensável com PIS/Cofins quando atendidas as obrigações legais.','https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'],
+['IBS na nota — teste 2026','Em transição','0,1%','Valor da operação','Campo da reforma tributária, em fase de teste durante 2026.','https://www.gov.br/receitafederal/pt-br/acesso-a-informacao/acoes-e-programas/programas-e-atividades/reforma-tributaria-do-consumo/entenda'],
+
+['II — Imposto de Importação','Imposto','Alíquota da TEC/NCM; frequentemente 0% a 35%','Valor aduaneiro (mercadoria + frete + seguro)','Não existe taxa única: depende da NCM, origem, acordo comercial, cota e regime aduaneiro. Bagagem acima da cota tem regra própria de 50%.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/imposto-importacao'],
+['IPI-Importação','Imposto','Alíquota TIPI da NCM; 0% a 30% ou mais','Valor aduaneiro + II','Calculado após o II; pode haver isenção, suspensão ou alíquota zero.','https://www4.receita.fazenda.gov.br/simulador/glossario.html'],
+['PIS-Importação','Contribuição','2,10% em regra; variável por produto','Valor aduaneiro, conforme legislação','Há alíquotas diferenciadas, adicionais, reduções, suspensão e isenção.','https://www.gov.br/empresas-e-negocios/pt-br/invest-export-brasil/importar/consulte-normas-tributarias/tratamento-tributario-na-importacao-1'],
+['Cofins-Importação','Contribuição','9,65% em regra; variável por produto','Valor aduaneiro, conforme legislação','Pode existir adicional de 1 ponto percentual e tratamentos específicos, conforme NCM e legislação.','https://www.gov.br/empresas-e-negocios/pt-br/invest-export-brasil/importar/consulte-normas-tributarias/tratamento-tributario-na-importacao-1'],
+['ICMS-Importação','Imposto','Alíquota interna da UF: modal de 17% a 23%','Base ampla, calculada “por dentro”','Em regra inclui valor aduaneiro, II, IPI, PIS/Cofins-Importação, despesas aduaneiras, AFRMM e outros valores previstos pela UF.','https://www.gov.br/empresas-e-negocios/pt-br/invest-export-brasil/importar/consulte-normas-tributarias/tratamento-tributario-na-importacao-1'],
+['AFRMM — longo curso','Contribuição','25%','Frete aquaviário','Adicional ao frete em navegação de longo curso; há isenções, suspensões e regimes especiais.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/afrmm'],
+['AFRMM — cabotagem','Contribuição','10%','Frete aquaviário','Aplicado à remuneração do transporte por cabotagem.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/afrmm'],
+['AFRMM — navegação fluvial/lacustre especial','Contribuição','40%','Frete aquaviário','Para granéis líquidos nas regiões Norte e Nordeste, conforme hipótese legal.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/tributos/afrmm'],
+['Taxa de utilização do Siscomex','Taxa','Valor fixo variável por declaração e adições','Registro da DI/declaração','Despesa aduaneira; a tabela e o modelo de declaração usados determinam o valor. Pode integrar a base do ICMS-importação.','https://www.gov.br/siscomex/pt-br'],
+['Direito antidumping','Defesa comercial','Valor específico ou percentual variável','Quantidade ou valor aduaneiro','Não é imposto geral: aplica-se somente a produto, origem e prazo determinados em ato da Camex.','https://www.gov.br/mdic/pt-br/assuntos/comercio-exterior/defesa-comercial-e-interesse-publico'],
+['Medida compensatória / salvaguarda','Defesa comercial','Variável conforme ato','Quantidade ou valor da importação','Cobrança excepcional para produtos e origens abrangidos por ato vigente.','https://www.gov.br/mdic/pt-br/assuntos/comercio-exterior/defesa-comercial-e-interesse-publico'],
+['CIDE-Combustíveis na importação','Contribuição','Valor específico por m³ ou tonelada','Quantidade importada','Somente combustíveis abrangidos; valores podem ser reduzidos ou restabelecidos por norma.','https://www.gov.br/receitafederal/pt-br'],
+['Imposto de Importação — remessa internacional','Imposto','20% ou 60%, conforme regime e requisitos','Valor aduaneiro da remessa','No Remessa Conforme, compras até US$ 50 seguem alíquota federal reduzida com regras próprias; fora das condições, aplica-se em regra 60%. ICMS é separado.','https://www.gov.br/receitafederal/pt-br/assuntos/aduana-e-comercio-exterior/manuais/remessas-postal-e-expressa/topicos/tributacao'],
+
+['IE — Imposto de Exportação','Imposto','0% para a grande maioria; variável nas exceções','Preço normal/valor da exportação','O Brasil desonera a maioria das exportações. A Camex define os poucos produtos e destinos sujeitos ao IE.','https://www.gov.br/siscomex/pt-br/servicos/aprendendo-a-exportar/5-formacao-do-preco-de-exportacao/incentivos-as-exportacoes-brasileiras-1'],
+['ICMS na exportação','Imposto','0% / não incidência','Valor da operação de exportação','Exportações de mercadorias são desoneradas, com manutenção/aproveitamento de créditos conforme as regras aplicáveis.','https://www.gov.br/siscomex/pt-br/servicos/aprendendo-a-exportar/5-formacao-do-preco-de-exportacao/incentivos-as-exportacoes-brasileiras-1'],
+['IPI na exportação','Imposto','0% / imunidade','Valor do produto exportado','Produtos industrializados destinados ao exterior são imunes ao IPI.','https://www.gov.br/siscomex/pt-br/servicos/aprendendo-a-exportar/5-formacao-do-preco-de-exportacao/incentivos-as-exportacoes-brasileiras-1'],
+['PIS/Cofins na exportação','Contribuição','0% / não incidência','Receita de exportação','Receitas de exportação são desoneradas nas hipóteses legais, preservadas regras de créditos.','https://www.gov.br/siscomex/pt-br/servicos/aprendendo-a-exportar/5-formacao-do-preco-de-exportacao/incentivos-as-exportacoes-brasileiras-1'],
+['ISS na exportação de serviços','Imposto','Não incidência quando o resultado ocorre no exterior','Preço do serviço','Se o resultado do serviço ocorrer no Brasil, a simples contratação por estrangeiro não garante a desoneração.','https://www.planalto.gov.br/ccivil_03/leis/lcp/lcp116.htm'],
+['Reintegra / Acredita Exportação','Crédito fiscal','3% para ME/EPP entre 01/08/2025 e 31/12/2026','Receita elegível de exportação','Não é taxa cobrada: é crédito/benefício para exportadores elegíveis, sujeito às regras do programa.','https://www.gov.br/receitafederal/pt-br/assuntos/orientacao-tributaria/restituicao-ressarcimento-reembolso-e-compensacao/mensagens/reintegra/valor-maximo'],
+['Drawback','Regime aduaneiro','Suspensão, isenção ou restituição','Tributos de insumos vinculados à exportação','Não é uma taxa; é regime que pode suspender ou eliminar tributos sobre insumos usados em bens exportados.','https://www.gov.br/siscomex/pt-br/servicos/aprendendo-a-exportar/5-formacao-do-preco-de-exportacao/incentivos-as-exportacoes-brasileiras-1']
+];
+trade.forEach(x=>add('NF-e / Comércio exterior','BR',...x));
+
+const special=[
+['Taxa de emissão de passaporte','Taxa','R$ 257,25 em situação comum','Emissão do documento','Pode haver valor maior em urgência ou perda de passaporte válido.','https://www.gov.br/pf/pt-br/assuntos/passaporte'],
+['Taxa de fiscalização CVM','Taxa','variável por categoria','Porte/categoria do participante','Valores definidos em lei e atualizados conforme enquadramento.','https://www.gov.br/cvm/pt-br'],
+['Taxa de fiscalização Anvisa','Taxa','variável por fato gerador e porte','Serviço/fiscalização sanitária','TFVS possui tabela extensa, com reduções conforme porte.','https://www.gov.br/anvisa/pt-br'],
+['Taxas do Ibama','Taxa','variável','Atividade, porte ou serviço','Inclui TCFA e serviços ambientais; valores dependem do enquadramento.','https://www.gov.br/ibama/pt-br'],
+['Taxa de fiscalização Anatel','Taxa','variável','Estação/serviço de telecomunicação','Instalação e funcionamento dependem da modalidade e do serviço.','https://www.gov.br/anatel/pt-br'],
+['Taxas de registro de propriedade industrial — INPI','Taxa','variável por serviço','Pedido, exame, registro ou manutenção','Há valores e descontos específicos para pessoas físicas, MEI, ME/EPP e outros.','https://www.gov.br/inpi/pt-br']
+]; special.forEach(x=>add('Federal','BR',...x));
+
+const ufSelect=document.querySelector('#uf'); states.forEach(([uf,n])=>ufSelect.insertAdjacentHTML('beforeend',`<option value="${uf}">${uf} — ${n}</option>`));
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const badgeFor=t=>({'Imposto':'badge-info','Taxa':'badge-warn','Contribuição':'badge-pos','Em transição':'badge-neg'}[t]||'badge-neutral');
+function render(){const q=document.querySelector('#q').value.toLowerCase(),sp=document.querySelector('#sphere').value,uf=document.querySelector('#uf').value,tp=document.querySelector('#type').value;const result=rows.filter(r=>(!sp||r.sphere===sp)&&(!uf||r.uf===uf)&&(!tp||r.type===tp)&&(!q||Object.values(r).join(' ').toLowerCase().includes(q)));document.querySelector('#count').textContent=`${result.length} de ${rows.length} registros`;document.querySelector('#rows').innerHTML=result.map(r=>`<article class="tax"><div class="tax-head"><div class="info"><div class="name">${esc(r.name)}</div><div class="meta">${esc(r.sphere)} · ${esc(r.uf)}</div></div><span class="badge ${badgeFor(r.type)}">${esc(r.type)}</span></div><div class="tax-value">${esc(r.value)}</div><div class="meta">Base: ${esc(r.base)}</div><p class="tax-desc">${esc(r.desc)}</p><a class="btn btn-ghost tax-link" href="${esc(r.source)}" target="_blank" rel="noopener">Consultar fonte</a></article>`).join('')||'<div class="empty-state"><div class="icon"><svg class="ico ico-empty" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></div><div class="title">Nenhum tributo encontrado</div><div class="desc">Mude a busca ou limpe os filtros.</div></div>'}
+document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEventListener('input',render));render();
+// ---- Calculadora de preço com/sem impostos ----
+(()=>{
+ const $=id=>document.getElementById(id);
+ const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
+ const pct=v=>(v*100).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
+ const num=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v/100:0};
+ const val=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0};
+ const icmsUf=Object.fromEntries(states.map(([uf,,icms])=>[uf,parseFloat(icms.replace(',','.'))]));
+ states.forEach(([uf,n])=>$('cUf').insertAdjacentHTML('beforeend',`<option value="${uf}">${uf} — ${n}</option>`));
+ $('cUf').value='SP';
+ let mode='sell';
+ const setIcms=()=>{$('cIcms').value=$('cReg').value==='import'?({SP:17}[$('cUf').value]??icmsUf[$('cUf').value]):icmsUf[$('cUf').value]};
+ const toggle=()=>{
+  const r=$('cReg').value, sell=mode==='sell'&&r!=='import';
+  $('wPis').classList.toggle('hide',r==='simples'||r==='import');
+  $('wIcms').classList.toggle('hide',r==='simples');
+  $('wIpi').classList.toggle('hide',r==='import');
+  $('wSimp').classList.toggle('hide',r!=='simples');
+  $('wII').classList.toggle('hide',r!=='import');
+  document.querySelectorAll('.sellOnly').forEach(e=>e.classList.toggle('hide',!sell));
+  $('lblValue').textContent=mode==='buy'?'Preço pago, com impostos (R$)':r==='import'?'Valor do produto no exterior, em R$':'Custo do produto (R$)';
+ };
+ const setReg=()=>{$('cPis').value=$('cReg').value==='real'?9.25:3.65;setIcms();toggle()};
+ const row=(a,b,c)=>`<tr${c?` class="${c}"`:''}><td>${a}</td><td>${brl(b)}</td></tr>`;
+ const show=(label,main,sub,html)=>{$('rLabel').textContent=label;$('rMain').textContent=main;$('rSub').textContent=sub;$('rRows').innerHTML=html};
+ function calc(){
+  const r=$('cReg').value, v=val('cValue');
+  const i=num('cIcms'), p=num('cPis'), ipi=r==='import'?0:num('cIpi'), sp=num('cSimp'), ii=num('cII');
+  // Parcela de impostos sobre o preço final (ipi por fora, o resto sobre a base sem IPI)
+  const tau=r==='simples'?(sp+ipi)/(1+ipi):(ipi+i+(1-i)*p)/(1+ipi);
+  const taxLines=P=>{const base=P/(1+ipi),l=[];
+   if(r==='simples')l.push(['Simples Nacional (DAS) '+pct(sp),base*sp]);
+   else{l.push(['ICMS '+pct(i)+' (por dentro)',base*i],['PIS/Cofins '+pct(p),base*(1-i)*p])}
+   if(ipi)l.push(['IPI '+pct(ipi),base*ipi]);return l};
+  const cbs=P=>`<tr class="info"><td>CBS 0,9% + IBS 0,1% destacados em 2026 (compensáveis)</td><td>${brl(P/(1+ipi)*0.01)}</td></tr>`;
+  const fail=m=>show(mode==='sell'?'Preço de venda':'Valor sem impostos','—',m,'');
+
+  if(r==='import'){
+   let net,gross;
+   if(mode==='sell'){net=v;gross=net*(1+ii)/(1-i)}else{gross=v;net=gross*(1-i)/(1+ii)}
+   if(!(i<1))return fail('Revise o ICMS: precisa ser menor que 100%.');
+   const tax=gross-net;
+   return show(mode==='sell'?'Total pago na importação':'Valor do produto sem impostos',brl(mode==='sell'?gross:net),
+    `${brl(tax)} de impostos · ${gross?pct(tax/gross):'0%'} do preço final`,
+    row('Produto sem impostos',net)+row('Imposto de importação '+pct(ii),net*ii)+row('ICMS '+pct(i)+' (por dentro)',gross*i)+row('Total de impostos',tax,'total')+row('Preço final pago',gross,'total'));
+  }
+
+  if(mode==='buy'){
+   if(!(tau<1))return fail('Revise as alíquotas: a soma não pode chegar a 100%.');
+   const gross=v, tl=taxLines(gross), tax=tl.reduce((a,x)=>a+x[1],0), net=gross-tax;
+   return show('Valor do produto sem impostos',brl(net),`${brl(tax)} de impostos · ${gross?pct(tax/gross):'0%'} do preço final`,
+    row('Produto sem impostos',net)+tl.map(x=>row(...x)).join('')+row('Total de impostos',tax,'total')+row('Preço final pago',gross,'total')+cbs(gross));
+  }
+
+  // Venda: P = (custo + fixo + frete) / (1 − impostos − comissão − pagamento − margem)
+  const m=num('cMargem'), c=num('cCom'), t=num('cPag'), fixo=val('cFixo'), frete=val('cFrete');
+  const den=1-tau-c-t-m;
+  if(!(den>0))return fail('A soma de impostos, comissão, taxa de pagamento e margem chegou a 100% ou mais. Reduza algum percentual.');
+  const P=(v+fixo+frete)/den, tl=taxLines(P), tax=tl.reduce((a,x)=>a+x[1],0);
+  const fees=P*c+P*t+fixo+frete, lucro=P*m;
+  const feeLines=[['Comissão do marketplace '+pct(c),P*c],['Taxa de pagamento '+pct(t),P*t],['Tarifa fixa por venda',fixo],['Frete',frete]].filter(x=>x[1]>0);
+  show('Preço de venda',brl(P),`Lucro ${brl(lucro)} · impostos ${brl(tax)} · taxas ${brl(fees)}`,
+   row('Custo do produto',v)+row('Lucro ('+pct(m)+' do preço)',lucro)
+   +tl.map(x=>row(...x,'sub')).join('')+row('Total de impostos',tax,'total')
+   +(feeLines.length?feeLines.map(x=>row(...x,'sub')).join('')+row('Total de taxas e frete',fees,'total'):'')
+   +row('Preço de venda',P,'total')+cbs(P));
+ }
+ const setMode=m=>{mode=m;$('mSell').setAttribute('aria-pressed',m==='sell');$('mBuy').setAttribute('aria-pressed',m==='buy');toggle();calc()};
+ $('mSell').onclick=()=>setMode('sell');$('mBuy').onclick=()=>setMode('buy');
+ $('cReg').addEventListener('input',()=>{setReg();calc()});
+ $('cUf').addEventListener('input',()=>{setIcms();calc()});
+ document.querySelectorAll('.cgrid input').forEach(e=>e.addEventListener('input',calc));
+ setReg();calc();
+})();
+
+// ---- PWA: service worker e botão de instalar ----
+if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}))}
+let deferredPrompt;
+addEventListener('beforeinstallprompt',e=>{e.preventDefault();deferredPrompt=e;document.getElementById('installBtn').style.display='inline-block'});
+document.getElementById('installBtn').addEventListener('click',async()=>{if(!deferredPrompt)return;deferredPrompt.prompt();await deferredPrompt.userChoice;deferredPrompt=null;document.getElementById('installBtn').style.display='none'});
+addEventListener('appinstalled',()=>{document.getElementById('installBtn').style.display='none'});
+
+// ---- Navegação entre telas ----
+(()=>{const views={calc:document.getElementById('viewCalc'),cat:document.getElementById('viewCat'),set:document.getElementById('viewSet')};
+ const go=v=>{if(!views[v])v='calc';Object.entries(views).forEach(([k,el])=>el.hidden=k!==v);document.querySelectorAll('.nav-item').forEach(b=>{const on=b.dataset.view===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});if(v==='set')window.vaultReady.then(()=>FinancSettings.mount(document.getElementById('settingsMount')));scrollTo(0,0)};
+ document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.view);go(b.dataset.view)}));
+ go(location.hash.slice(1));})();
+</script>
+</body></html>
