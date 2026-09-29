@@ -23,6 +23,7 @@ const rfb='https://www.gov.br/receitafederal/pt-br';
 ['CIDE-Royalties','Contribuição','10%','Remessas/contratos abrangidos','Incide em hipóteses legais de tecnologia, royalties e serviços técnicos.'],
 ['FGTS','Contribuição','8% em regra','Remuneração do empregado','Depósito do empregador; 2% para aprendiz e regras próprias em contratos específicos.'],
 ['Salário-Educação','Contribuição','2,5%','Folha de salários','Cobrado de empresas vinculadas à Previdência, ressalvadas exceções.'],
+['MEI — DAS mensal','Imposto','R$ 82,05 a R$ 87,05 por mês (2026)','Valor fixo, independe do faturamento','5% do salário mínimo de INSS (R$ 81,05) + R$ 1 de ICMS (comércio/indústria) e/ou R$ 5 de ISS (serviços). Limite de faturamento: R$ 81 mil por ano; acima disso, desenquadramento para o Simples.'],
 ['CBS — ano-teste 2026','Em transição','0,9%','Operações com bens e serviços','Compensável com PIS/Cofins em 2026 quando cumpridas as obrigações.'],
 ['IBS — ano-teste 2026','Em transição','0,1%','Operações com bens e serviços','Alíquota teste; transição da reforma tributária do consumo.']
 ].forEach(x=>add('Federal','BR',...x,rfb));
@@ -122,9 +123,10 @@ document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEven
  const setIcms=()=>{$('cIcms').value=$('cReg').value==='import'?({SP:17}[$('cUf').value]??icmsUf[$('cUf').value]):icmsUf[$('cUf').value]};
  const toggle=()=>{
   const r=$('cReg').value, sell=mode==='sell'&&r!=='import';
-  $('wPis').classList.toggle('hide',r==='simples'||r==='import');
-  $('wIcms').classList.toggle('hide',r==='simples');
-  $('wIpi').classList.toggle('hide',r==='import');
+  $('wPis').classList.toggle('hide',r==='simples'||r==='import'||r==='mei');
+  $('wIcms').classList.toggle('hide',r==='simples'||r==='mei');
+  $('wIpi').classList.toggle('hide',r==='import'||r==='mei');
+  ['wMeiAt','wDas','wVendas'].forEach(id=>$(id).classList.toggle('hide',r!=='mei'));
   $('wSimp').classList.toggle('hide',r!=='simples');
   $('wII').classList.toggle('hide',r!=='import');
   document.querySelectorAll('.sellOnly').forEach(e=>e.classList.toggle('hide',!sell));
@@ -144,6 +146,27 @@ document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEven
    if(ipi)l.push(['IPI '+pct(ipi),base*ipi]);return l};
   const cbs=P=>`<tr class="info"><td>CBS 0,9% + IBS 0,1% destacados em 2026 (compensáveis)</td><td>${brl(P/(1+ipi)*0.01)}</td></tr>`;
   const fail=m=>show(mode==='sell'?'Preço de venda':'Valor sem impostos','—',m,'');
+
+  if(r==='mei'){
+   const das=val('cDas'), n=Math.floor(val('cVendas'));
+   if(!(n>=1))return fail('Informe quantas vendas você faz por mês (1 ou mais).');
+   const du=das/n, dasRow=row(`DAS MEI (${brl(das)}/mês ÷ ${n} vendas)`,du);
+   const limite=P=>{const ano=P*n*12;return ano>81000?`<tr class="info"><td>Faturamento estimado ${brl(ano)}/ano: acima do limite do MEI (R$ 81 mil). Fale com um contador sobre o Simples Nacional.</td><td></td></tr>`:''};
+   if(mode==='buy'){
+    const gross=v, tax=Math.min(du,gross), net=gross-tax;
+    return show('Valor do produto sem impostos',brl(net),`${brl(tax)} de DAS por venda · ${gross?pct(tax/gross):'0%'} do preço`,
+     row('Produto sem impostos',net)+dasRow+row('Preço pago',gross,'total')+limite(gross));
+   }
+   const m=num('cMargem'), c=num('cCom'), t=num('cPag'), fixo=val('cFixo'), frete=val('cFrete');
+   const den=1-c-t-m;
+   if(!(den>0))return fail('A soma de comissão, taxa de pagamento e margem chegou a 100% ou mais. Reduza algum percentual.');
+   const P=(v+fixo+frete+du)/den, fees=P*c+P*t+fixo+frete, lucro=P*m;
+   const feeLines=[['Comissão do marketplace '+pct(c),P*c],['Taxa de pagamento '+pct(t),P*t],['Tarifa fixa por venda',fixo],['Frete',frete]].filter(x=>x[1]>0);
+   return show('Preço de venda',brl(P),`Lucro ${brl(lucro)} · DAS ${brl(du)} por venda · taxas ${brl(fees)}`,
+    row('Custo do produto',v)+row('Lucro ('+pct(m)+' do preço)',lucro)+dasRow
+    +(feeLines.length?feeLines.map(x=>row(...x,'sub')).join('')+row('Total de taxas e frete',fees,'total'):'')
+    +row('Preço de venda',P,'total')+limite(P));
+  }
 
   if(r==='import'){
    let net,gross;
@@ -179,6 +202,7 @@ document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEven
  $('mSell').onclick=()=>setMode('sell');$('mBuy').onclick=()=>setMode('buy');
  $('cReg').addEventListener('input',()=>{setReg();calc()});
  $('cUf').addEventListener('input',()=>{setIcms();calc()});
+ $('cMeiAt').addEventListener('input',()=>{$('cDas').value=$('cMeiAt').value;calc()});
  document.querySelectorAll('.cgrid input').forEach(e=>e.addEventListener('input',calc));
  setReg();calc();
 })();

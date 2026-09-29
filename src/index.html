@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.7.1" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.8.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -111,6 +111,7 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
      <option value="presumido">Lucro Presumido</option>
      <option value="real">Lucro Real</option>
      <option value="simples">Simples Nacional</option>
+     <option value="mei">MEI (DAS fixo)</option>
      <option value="import">Importação (Remessa Conforme)</option>
     </select></label>
     <label>UF da operação<select id="cUf"></select></label>
@@ -118,6 +119,13 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
     <label id="wPis">PIS/Cofins (%)<input id="cPis" type="number" inputmode="decimal" min="0" max="99" step="0.01"></label>
     <label id="wIpi">IPI (%), por fora<input id="cIpi" type="number" inputmode="decimal" min="0" max="300" step="0.1" value="0"></label>
     <label id="wSimp" class="hide">Alíquota do Simples (%)<input id="cSimp" type="number" inputmode="decimal" min="0" max="99" step="0.01" value="4"></label>
+    <label id="wMeiAt" class="wide hide">Atividade do MEI<select id="cMeiAt">
+     <option value="82.05">Comércio/indústria (R$ 82,05)</option>
+     <option value="86.05">Serviços (R$ 86,05)</option>
+     <option value="87.05">Comércio + serviços (R$ 87,05)</option>
+    </select></label>
+    <label id="wDas" class="hide">DAS por mês (R$)<input id="cDas" type="number" inputmode="decimal" min="0" step="0.01" value="82.05"></label>
+    <label id="wVendas" class="hide">Vendas por mês<input id="cVendas" type="number" inputmode="numeric" min="1" step="1" value="100"></label>
     <label id="wII" class="wide hide">Imposto de importação (%)<input id="cII" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="0"><span>Remessa Conforme, pessoa física (Portaria MF 1.342/2026): até US$ 50, 0%; de US$ 50,01 a US$ 3.000, 60% com desconto de US$ 30 no imposto.</span></label>
     <label class="sellOnly" id="wMargem">Margem de lucro (% do preço)<input id="cMargem" type="number" inputmode="decimal" min="0" max="99" step="0.5" value="0"></label>
     <p class="glabel sellOnly">Custos de venda</p>
@@ -135,7 +143,7 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
    <div class="result-sub" id="rSub"></div>
    <table class="data-table"><tbody id="rRows"></tbody></table>
   </div>
-  <p class="note">Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação, porque são compensáveis.</p>
+  <p class="note">Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação, porque são compensáveis. No MEI, o DAS é fixo por mês (valores de 2026, salário mínimo de R$ 1.621) e entra no preço dividido pelas vendas do mês; o limite de faturamento é de R$ 81 mil por ano.</p>
  </section>
 
  <section id="viewCat" hidden aria-labelledby="cat-title">
