@@ -1,0 +1,5 @@
+{
+  "name": "taxometro",
+  "private": true,
+  "scripts": { "test": "node --test test/" }
+}
