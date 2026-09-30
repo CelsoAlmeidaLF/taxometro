@@ -113,101 +113,119 @@ const badgeFor=t=>({'Imposto':'badge-info','Taxa':'badge-warn','Contribuição':
 function render(){const q=document.querySelector('#q').value.toLowerCase(),sp=document.querySelector('#sphere').value,uf=document.querySelector('#uf').value,tp=document.querySelector('#type').value;const result=rows.filter(r=>(!sp||r.sphere===sp)&&(!uf||r.uf===uf)&&(!tp||r.type===tp)&&(!q||Object.values(r).join(' ').toLowerCase().includes(q)));document.querySelector('#count').textContent=`${result.length} de ${rows.length} registros`;document.querySelector('#rows').innerHTML=result.map(r=>`<article class="tax"><div class="tax-head"><div class="info"><div class="name">${esc(r.name)}</div><div class="meta">${esc(r.sphere)} · ${esc(r.uf)}</div></div><span class="badge ${badgeFor(r.type)}">${esc(r.type)}</span></div><div class="tax-value">${esc(r.value)}</div><div class="meta">Base: ${esc(r.base)}</div><p class="tax-desc">${esc(r.desc)}</p><a class="btn btn-ghost tax-link" href="${esc(r.source)}" target="_blank" rel="noopener noreferrer">Consultar fonte</a></article>`).join('')||'<div class="empty-state"><div class="icon"><svg class="ico ico-empty" width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="m20 20-4.4-4.4"/></svg></div><div class="title">Nenhum tributo encontrado</div><div class="desc">Mude a busca ou limpe os filtros.</div></div>'}
 document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEventListener('input',render));render();
 // ---- Calculadora de preço com/sem impostos ----
+// As fórmulas ficam em tax-engine.js (funções puras, testadas em test/); aqui só há leitura dos campos e desenho do resultado.
 (()=>{
+ const T=window.TaxEngine;
  const $=id=>document.getElementById(id);
  const brl=v=>v.toLocaleString('pt-BR',{style:'currency',currency:'BRL'});
  const pct=v=>(v*100).toLocaleString('pt-BR',{maximumFractionDigits:2})+'%';
- const num=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v/100:0};
- const val=id=>{const v=parseFloat($(id).value);return isFinite(v)&&v>0?v:0};
  const icmsUf=Object.fromEntries(states.map(([uf,,icms])=>[uf,parseFloat(icms.replace(',','.'))]));
  states.forEach(([uf,n])=>$('cUf').insertAdjacentHTML('beforeend',`<option value="${uf}">${uf} — ${n}</option>`));
  $('cUf').value='SP';
  let mode='sell';
- const setIcms=()=>{$('cIcms').value=$('cReg').value==='import'?({SP:17}[$('cUf').value]??icmsUf[$('cUf').value]):icmsUf[$('cUf').value]};
+ // Leitura validada: vazio vira 0 (campos opcionais), texto inválido/negativo/acima do max mostra erro em vez de virar 0 em silêncio.
+ const read=(id,label,o={})=>{const el=$(id);if(el.validity&&el.validity.badInput){el.setAttribute('aria-invalid','true');throw {msg:`${label}: valor inválido.`}}
+  const r=T.parseField(el.value,{label,min:el.min!==''?+el.min:0,max:el.max!==''?+el.max:Infinity,...o});
+  if(r.error){el.setAttribute('aria-invalid','true');throw {msg:r.error}}return r.value};
+ const readPct=(id,label,o)=>read(id,label,o)/100;
+ const setIcms=()=>{const uf=$('cUf').value;$('cIcms').value=$('cReg').value==='import'?T.icmsImportacao(uf)*100:icmsUf[uf]};
  const toggle=()=>{
-  const r=$('cReg').value, sell=mode==='sell'&&r!=='import';
-  $('wPis').classList.toggle('hide',r==='simples'||r==='import'||r==='mei');
-  $('wIcms').classList.toggle('hide',r==='simples'||r==='mei');
-  $('wIpi').classList.toggle('hide',r==='import'||r==='mei');
-  ['wMeiAt','wDas','wVendas'].forEach(id=>$(id).classList.toggle('hide',r!=='mei'));
-  $('wSimp').classList.toggle('hide',r!=='simples');
-  $('wII').classList.toggle('hide',r!=='import');
+  const r=$('cReg').value, sell=mode==='sell'&&r!=='import', imp=r==='import';
+  const on=(id,show)=>$(id).classList.toggle('hide',!show);
+  on('wPis',r==='presumido'||r==='real');
+  on('wIcms',r==='presumido'||r==='real'||imp);
+  on('wIpi',r==='presumido'||r==='real');
+  on('wDest',r==='presumido'||r==='real');
+  on('wFat',r==='presumido');on('wLc',r==='presumido');
+  ['wMeiTipo','wMeiAt','wMeiMeses','wDas','wVendas'].forEach(id=>on(id,r==='mei'));
+  ['wSimp','wAnexo'].forEach(id=>on(id,r==='simples'));
+  on('wRbt',r==='simples'&&$('cAnexo').value!=='manual');
+  ['wII','wCot','wIof'].forEach(id=>on(id,imp));
+  on('wFrExt',imp&&mode==='sell');
+  $('cSimp').readOnly=r==='simples'&&$('cAnexo').value!=='manual';
   document.querySelectorAll('.sellOnly').forEach(e=>e.classList.toggle('hide',!sell));
-  $('lblValue').textContent=mode==='buy'?'Preço pago, com impostos (R$)':r==='import'?'Valor do produto no exterior, em R$':'Custo do produto (R$)';
+  $('lblValue').textContent=imp?(mode==='buy'?'Total pago, com impostos e IOF (R$)':'Valor do produto no exterior (US$)'):mode==='buy'?'Preço pago, com impostos (R$)':'Custo do produto (R$)';
  };
  const setReg=()=>{$('cPis').value=$('cReg').value==='real'?9.25:3.65;setIcms();toggle()};
+ const setDas=()=>{$('cDas').value=T.meiDas($('cMeiTipo').value,$('cMeiAt').value)};
  const row=(a,b,c)=>`<tr${c?` class="${c}"`:''}><td>${a}</td><td>${brl(b)}</td></tr>`;
+ const info=t=>`<tr class="info"><td colspan="2">${esc(t)}</td></tr>`;
  const show=(label,main,sub,html)=>{$('rLabel').textContent=label;$('rMain').textContent=main;$('rSub').textContent=sub;$('rRows').innerHTML=html};
- function calc(){
-  const r=$('cReg').value, v=val('cValue');
-  const i=num('cIcms'), p=num('cPis'), ipi=r==='import'?0:num('cIpi'), sp=num('cSimp'), ii=num('cII');
-  // Parcela de impostos sobre o preço final (ipi por fora, o resto sobre a base sem IPI)
-  const tau=r==='simples'?(sp+ipi)/(1+ipi):(ipi+i+(1-i)*p)/(1+ipi);
-  const taxLines=P=>{const base=P/(1+ipi),l=[];
-   if(r==='simples')l.push(['Simples Nacional (DAS) '+pct(sp),base*sp]);
-   else{l.push(['ICMS '+pct(i)+' (por dentro)',base*i],['PIS/Cofins '+pct(p),base*(1-i)*p])}
-   if(ipi)l.push(['IPI '+pct(ipi),base*ipi]);return l};
-  const cbs=P=>`<tr class="info"><td>CBS 0,9% + IBS 0,1% destacados em 2026 (compensáveis)</td><td>${brl(P/(1+ipi)*0.01)}</td></tr>`;
-  const fail=m=>show(mode==='sell'?'Preço de venda':'Valor sem impostos','—',m,'');
+ const fail=m=>show(mode==='sell'?'Preço de venda':'Valor sem impostos','—',m,'');
+ const lineLabel=x=>x.label+(x.rate!=null?' '+pct(x.rate):'');
+ const cbsRow=c=>c==null?'':`<tr class="info"><td>CBS 0,9% + IBS 0,1% destacados em 2026, só informativos e fora do preço. Quem cumpre as obrigações acessórias fica dispensado de recolher (LC 214/2025, art. 348 §1º).</td><td>${brl(c)}</td></tr>`;
+ const meiMsg=s=>!s?'':info(`Faturamento estimado ${brl(s.fat)} em ${s.meses} ${s.meses===1?'mês':'meses'}, acima do limite proporcional do MEI (${brl(s.limite)}). `+(s.faixa==='tolerancia'?'Dentro da tolerância de 20% (até '+brl(s.tolerancia)+'): continua MEI, com DAS sobre o excedente.':'Acima da tolerância de 20%: desenquadramento retroativo a 1º de janeiro. Fale com um contador sobre o Simples Nacional.'));
+ const feeRows=r=>r.fees.length?r.fees.map(x=>row(x.label+(x.key==='com'||x.key==='pag'?' '+pct(x.key==='com'?rateCom:ratePag):''),x.v,'sub')).join('')+row('Total de taxas e frete',r.feeTotal,'total'):'';
+ let rateCom=0,ratePag=0;
+ const AVISO='Estimativa com alíquotas verificadas em '+T.VERIFICADO_EM+'; não substitui contador.';
 
-  if(r==='mei'){
-   const das=val('cDas'), n=Math.floor(val('cVendas'));
-   if(!(n>=1))return fail('Informe quantas vendas você faz por mês (1 ou mais).');
-   const du=das/n, dasRow=row(`DAS MEI (${brl(das)}/mês ÷ ${n} vendas)`,du);
-   const limite=P=>{const ano=P*n*12;return ano>81000?`<tr class="info"><td>Faturamento estimado ${brl(ano)}/ano: acima do limite do MEI (R$ 81 mil). Fale com um contador sobre o Simples Nacional.</td><td></td></tr>`:''};
-   if(mode==='buy'){
-    const gross=v, tax=Math.min(du,gross), net=gross-tax;
-    return show('Valor do produto sem impostos',brl(net),`${brl(tax)} de DAS por venda · ${gross?pct(tax/gross):'0%'} do preço`,
-     row('Produto sem impostos',net)+dasRow+row('Preço pago',gross,'total')+limite(gross));
-   }
-   const m=num('cMargem'), c=num('cCom'), t=num('cPag'), fixo=val('cFixo'), frete=val('cFrete');
-   const den=1-c-t-m;
-   if(!(den>0))return fail('A soma de comissão, taxa de pagamento e margem chegou a 100% ou mais. Reduza algum percentual.');
-   const P=(v+fixo+frete+du)/den, fees=P*c+P*t+fixo+frete, lucro=P*m;
-   const feeLines=[['Comissão do marketplace '+pct(c),P*c],['Taxa de pagamento '+pct(t),P*t],['Tarifa fixa por venda',fixo],['Frete',frete]].filter(x=>x[1]>0);
-   return show('Preço de venda',brl(P),`Lucro ${brl(lucro)} · DAS ${brl(du)} por venda · taxas ${brl(fees)}`,
-    row('Custo do produto',v)+row('Lucro ('+pct(m)+' do preço)',lucro)+dasRow
-    +(feeLines.length?feeLines.map(x=>row(...x,'sub')).join('')+row('Total de taxas e frete',fees,'total'):'')
-    +row('Preço de venda',P,'total')+limite(P));
-  }
-
+ function run(){
+  const r=$('cReg').value;
+  const v=read('cValue',mode==='buy'||r==='import'?'O valor':'O custo',{allowEmpty:false});
+  const rows=[];
   if(r==='import'){
-   let net,gross;
-   if(mode==='sell'){net=v;gross=net*(1+ii)/(1-i)}else{gross=v;net=gross*(1-i)/(1+ii)}
-   if(!(i<1))return fail('Revise o ICMS: precisa ser menor que 100%.');
-   const tax=gross-net;
-   return show(mode==='sell'?'Total pago na importação':'Valor do produto sem impostos',brl(mode==='sell'?gross:net),
-    `${brl(tax)} de impostos · ${gross?pct(tax/gross):'0%'} do preço final`,
-    row('Produto sem impostos',net)+row('Imposto de importação '+pct(ii),net*ii)+row('ICMS '+pct(i)+' (por dentro)',gross*i)+row('Total de impostos',tax,'total')+row('Preço final pago',gross,'total'));
+   const iiRaw=$('cII').value.trim();if($('cII').validity.badInput)read('cII','O imposto de importação');
+   const res=T.calcImport({mode,value:v,cot:read('cCot','A cotação do dólar',{allowEmpty:false,min:0.0001}),freteUsd:mode==='sell'?read('cFreteExt','O frete e seguro'):0,
+    icms:readPct('cIcms','O ICMS'),iiOverride:iiRaw===''?null:readPct('cII','O imposto de importação'),iof:$('cIof').value==='cartao'?T.IOF_CARTAO:0});
+   if(!res.ok)return fail(res.error);
+   const L=res.lines,icms=readPct('cIcms','O ICMS');
+   return show(mode==='sell'?'Total pago na importação':'Valor do produto sem impostos',brl(mode==='sell'?res.total:L.produto),
+    `${brl(res.tax)} de impostos · ${res.total?pct(res.tax/res.total):'0%'} do total pago`,
+    row('Produto'+(mode==='sell'?'':' (com frete e seguro)')+' sem impostos',L.produto)+(L.frete?row('Frete e seguro internacionais',L.frete):'')
+    +row('Imposto de importação'+(iiRaw===''?' (regra do Remessa Conforme)':' '+pct(readPct('cII','O imposto de importação'))),L.ii)
+    +row('ICMS '+pct(icms)+' (por dentro)',L.icms)+(L.iof?row('IOF do cartão internacional '+pct(T.IOF_CARTAO),L.iof):'')
+    +row('Total de impostos',res.tax,'total')+row('Total pago',res.total,'total')+res.warnings.map(info).join('')+info(AVISO));
   }
-
-  if(mode==='buy'){
-   if(!(tau<1))return fail('Revise as alíquotas: a soma não pode chegar a 100%.');
-   const gross=v, tl=taxLines(gross), tax=tl.reduce((a,x)=>a+x[1],0), net=gross-tax;
-   return show('Valor do produto sem impostos',brl(net),`${brl(tax)} de impostos · ${gross?pct(tax/gross):'0%'} do preço final`,
-    row('Produto sem impostos',net)+tl.map(x=>row(...x)).join('')+row('Total de impostos',tax,'total')+row('Preço final pago',gross,'total')+cbs(gross));
+  if(r==='mei'){
+   const das=read('cDas','O DAS');
+   const n=Math.floor(read('cVendas','As vendas por mês',{allowEmpty:false,min:1}));
+   rateCom=mode==='sell'?readPct('cCom','A comissão'):0;ratePag=mode==='sell'?readPct('cPag','A taxa de pagamento'):0;
+   const res=T.calcSale({mode,regime:'mei',value:v,das,vendas:n,meiTipo:$('cMeiTipo').value,meiMeses:read('cMeiMeses','Os meses de atividade',{def:12}),
+    margem:mode==='sell'?readPct('cMargem','A margem'):0,com:rateCom,pag:ratePag,fixo:mode==='sell'?read('cFixo','A tarifa fixa'):0,frete:mode==='sell'?read('cFrete','O frete'):0});
+   if(!res.ok)return fail(res.error);
+   const dasRow=row(`DAS MEI (${brl(das)}/mês ÷ ${n} vendas)`,res.du===undefined?res.tax:res.du);
+   if(mode==='buy')return show('Valor do produto sem impostos',brl(res.net),`${brl(res.tax)} de DAS por venda · ${res.P?pct(res.tax/res.P):'0%'} do preço`,
+    row('Produto sem impostos',res.net)+dasRow+row('Preço pago',res.P,'total')+meiMsg(res.meiStatus)+info(AVISO));
+   return show('Preço de venda',brl(res.P),`Lucro ${brl(res.lucro)} · DAS ${brl(res.du)} por venda · taxas ${brl(res.feeTotal)}`,
+    row('Custo do produto',res.v)+row('Lucro ('+pct(readPct('cMargem','A margem'))+' do preço)',res.lucro)+dasRow+feeRows(res)+row('Preço de venda',res.P,'total')+meiMsg(res.meiStatus)+info(AVISO));
   }
-
-  // Venda: P = (custo + fixo + frete) / (1 − impostos − comissão − pagamento − margem)
-  const m=num('cMargem'), c=num('cCom'), t=num('cPag'), fixo=val('cFixo'), frete=val('cFrete');
-  const den=1-tau-c-t-m;
-  if(!(den>0))return fail('A soma de impostos, comissão, taxa de pagamento e margem chegou a 100% ou mais. Reduza algum percentual.');
-  const P=(v+fixo+frete)/den, tl=taxLines(P), tax=tl.reduce((a,x)=>a+x[1],0);
-  const fees=P*c+P*t+fixo+frete, lucro=P*m;
-  const feeLines=[['Comissão do marketplace '+pct(c),P*c],['Taxa de pagamento '+pct(t),P*t],['Tarifa fixa por venda',fixo],['Frete',frete]].filter(x=>x[1]>0);
-  show('Preço de venda',brl(P),`Lucro ${brl(lucro)} · impostos ${brl(tax)} · taxas ${brl(fees)}`,
-   row('Custo do produto',v)+row('Lucro ('+pct(m)+' do preço)',lucro)
-   +tl.map(x=>row(...x,'sub')).join('')+row('Total de impostos',tax,'total')
-   +(feeLines.length?feeLines.map(x=>row(...x,'sub')).join('')+row('Total de taxas e frete',fees,'total'):'')
-   +row('Preço de venda',P,'total')+cbs(P));
+  // Presumido, Real, Simples
+  let simples=0,extra=[];
+  if(r==='simples'){
+   if($('cAnexo').value!=='manual'){
+    const ef=T.simplesEfetiva($('cAnexo').value,read('cRbt12','A receita dos últimos 12 meses (RBT12)',{allowEmpty:false}));
+    if(ef.error){$('cRbt12').setAttribute('aria-invalid','true');return fail(ef.error)}
+    simples=ef.aliquota;$('cSimp').value=(simples*100).toFixed(2);
+    extra.push(`Alíquota efetiva (LC 123): ${pct(simples)} = (RBT12 × ${pct(ef.nominal)} − ${brl(ef.deducao)}) ÷ RBT12, ${ef.faixa}ª faixa.`);
+    if(ef.icmsIssFora)extra.push('RBT12 acima de R$ 3,6 milhões: ICMS/ISS são recolhidos fora do DAS.');
+   }else simples=readPct('cSimp','A alíquota do Simples');
+  }
+  const cash=r==='presumido'||r==='real';
+  rateCom=mode==='sell'?readPct('cCom','A comissão'):0;ratePag=mode==='sell'?readPct('cPag','A taxa de pagamento'):0;
+  const res=T.calcSale({mode,regime:r,value:v,icms:cash?readPct('cIcms','O ICMS'):0,pis:cash?readPct('cPis','O PIS/Cofins'):0,ipi:cash?readPct('cIpi','O IPI'):0,simples,
+   dest:$('cDest').value,fatMes:r==='presumido'?read('cFat','O faturamento mensal'):0,lc224:r==='presumido'&&$('cLc224').value==='sim',
+   margem:mode==='sell'?readPct('cMargem','A margem'):0,com:rateCom,pag:ratePag,fixo:mode==='sell'?read('cFixo','A tarifa fixa'):0,frete:mode==='sell'?read('cFrete','O frete'):0});
+  if(!res.ok)return fail(res.error);
+  const tl=res.taxLines.map(x=>row(lineLabel(x),x.v,mode==='sell'?'sub':'')).join('');
+  const notes=extra.concat(res.warnings).map(info).join('')+info(AVISO);
+  if(mode==='buy')return show('Valor do produto sem impostos',brl(res.net),`${brl(res.tax)} de impostos · ${res.P?pct(res.tax/res.P):'0%'} do preço final`,
+   row('Produto sem impostos',res.net)+tl+row('Total de impostos',res.tax,'total')+row('Preço final pago',res.P,'total')+cbsRow(res.cbs)+notes);
+  show('Preço de venda',brl(res.P),`Lucro ${brl(res.lucro)} · impostos ${brl(res.tax)} · taxas ${brl(res.feeTotal)}`,
+   row('Custo do produto',res.v)+row('Lucro ('+pct(readPct('cMargem','A margem'))+' do preço)',res.lucro)+tl+row('Total de impostos',res.tax,'total')
+   +feeRows(res)+row('Preço de venda',res.P,'total')+cbsRow(res.cbs)+notes);
+ }
+ function calc(){
+  document.querySelectorAll('.cgrid input,.cgrid select').forEach(e=>e.removeAttribute('aria-invalid'));
+  try{run()}catch(e){if(e&&e.msg)fail(e.msg);else throw e}
  }
  const setMode=m=>{mode=m;$('mSell').setAttribute('aria-pressed',m==='sell');$('mBuy').setAttribute('aria-pressed',m==='buy');toggle();calc()};
  $('mSell').onclick=()=>setMode('sell');$('mBuy').onclick=()=>setMode('buy');
  $('cReg').addEventListener('input',()=>{setReg();calc()});
  $('cUf').addEventListener('input',()=>{setIcms();calc()});
- $('cMeiAt').addEventListener('input',()=>{$('cDas').value=$('cMeiAt').value;calc()});
- document.querySelectorAll('.cgrid input').forEach(e=>e.addEventListener('input',calc));
- setReg();calc();
+ $('cAnexo').addEventListener('input',()=>{toggle();calc()});
+ ['cMeiAt','cMeiTipo'].forEach(id=>$(id).addEventListener('input',()=>{setDas();calc()}));
+ document.querySelectorAll('.cgrid input,.cgrid select').forEach(e=>e.addEventListener('input',calc));
+ setReg();setDas();calc();
 })();
 
 // ---- PWA: service worker e botão de instalar ----

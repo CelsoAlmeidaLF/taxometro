@@ -162,6 +162,7 @@ test('B1: cada linha arredondada a centavos e o total é a soma exibida', () => 
   assert.equal(T.round2(b.net + b.tax), b.P);
   assert.equal(T.round2(0.005), 0.01);
   assert.equal(T.round2(1.005), 1.01);
+  assert.ok(!Object.is(T.round2(-0.001), -0)); // sem "-R$ 0,00" na tela
 });
 
 test('B2: campos inválidos geram erro em vez de virar 0', () => {
