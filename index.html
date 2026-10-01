@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.9.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.10.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self' data:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://firestore.googleapis.com; img-src 'self' data:; manifest-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self';">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#0E1210">
   <meta name="description" content="Calculadora de preço com e sem impostos e catálogo de tributos do Brasil">
@@ -85,6 +85,7 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 .bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
 </style>
 <link rel="stylesheet" href="secure-ui.css">
+<link rel="stylesheet" href="apoio/apoio.css" id="dz-style">
 </head>
 <body>
 <div class="page">
@@ -193,4 +194,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 <script src="secure-ui.js"></script>
 <script src="tax-engine.js"></script>
 <script src="app.js"></script>
+<script src="apoio/feedback.js"></script>
+<script src="apoio/doacao.js" data-app="TAXOMETRO" data-flutuante="false"></script>
 </body></html>
