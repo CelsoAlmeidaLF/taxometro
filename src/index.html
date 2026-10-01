@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.8.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.9.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -115,18 +115,31 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
      <option value="import">Importação (Remessa Conforme)</option>
     </select></label>
     <label>UF da operação<select id="cUf"></select></label>
+    <label id="wDest" class="wide">Destinatário<select id="cDest">
+     <option value="final">Consumidor final ou uso e consumo (IPI entra na base do ICMS)</option>
+     <option value="revenda">Revenda ou industrialização (IPI fora da base do ICMS)</option>
+    </select></label>
     <label id="wIcms">ICMS (%)<input id="cIcms" type="number" inputmode="decimal" min="0" max="99" step="0.1"></label>
     <label id="wPis">PIS/Cofins (%)<input id="cPis" type="number" inputmode="decimal" min="0" max="99" step="0.01"></label>
     <label id="wIpi">IPI (%), por fora<input id="cIpi" type="number" inputmode="decimal" min="0" max="300" step="0.1" value="0"></label>
+    <label id="wFat" class="wide">Faturamento mensal (R$, opcional)<input id="cFat" type="number" inputmode="decimal" min="0" step="0.01" value="" placeholder="para o adicional de 10% do IRPJ"></label>
+    <label id="wLc" class="wide">LC 224/2025 (+10% na presunção acima de R$ 5 mi/ano)<select id="cLc224"><option value="nao">Não aplicar</option><option value="sim">Aplicar (pendente de validação com contador)</option></select></label>
+    <label id="wAnexo" class="wide hide">Alíquota do Simples<select id="cAnexo"><option value="manual">Informar a alíquota efetiva</option><option value="I">Calcular: Anexo I (comércio)</option><option value="II">Calcular: Anexo II (indústria, IPI já no DAS)</option></select></label>
+    <label id="wRbt" class="hide">RBT12 (R$, últimos 12 meses)<input id="cRbt12" type="number" inputmode="decimal" min="0" max="4800000" step="0.01" value="" placeholder="ex.: 300000"></label>
     <label id="wSimp" class="hide">Alíquota do Simples (%)<input id="cSimp" type="number" inputmode="decimal" min="0" max="99" step="0.01" value="4"></label>
+    <label id="wMeiTipo" class="wide hide">Tipo de MEI<select id="cMeiTipo"><option value="comum">MEI comum (limite R$ 81 mil/ano)</option><option value="caminhoneiro">MEI caminhoneiro (INSS 12%, limite R$ 251,6 mil/ano)</option></select></label>
     <label id="wMeiAt" class="wide hide">Atividade do MEI<select id="cMeiAt">
-     <option value="82.05">Comércio/indústria (R$ 82,05)</option>
-     <option value="86.05">Serviços (R$ 86,05)</option>
-     <option value="87.05">Comércio + serviços (R$ 87,05)</option>
+     <option value="com">ICMS: comércio/indústria/transporte (+R$ 1)</option>
+     <option value="serv">ISS: serviços (+R$ 5)</option>
+     <option value="ambos">ICMS + ISS (+R$ 6)</option>
     </select></label>
     <label id="wDas" class="hide">DAS por mês (R$)<input id="cDas" type="number" inputmode="decimal" min="0" step="0.01" value="82.05"></label>
     <label id="wVendas" class="hide">Vendas por mês<input id="cVendas" type="number" inputmode="numeric" min="1" step="1" value="100"></label>
-    <label id="wII" class="wide hide">Imposto de importação (%)<input id="cII" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="0"><span>Remessa Conforme, pessoa física (Portaria MF 1.342/2026): até US$ 50, 0%; de US$ 50,01 a US$ 3.000, 60% com desconto de US$ 30 no imposto.</span></label>
+    <label id="wMeiMeses" class="hide">Meses de atividade no ano de abertura<input id="cMeiMeses" type="number" inputmode="numeric" min="1" max="12" step="1" value="" placeholder="12 (ano cheio)"><span>Limite proporcional: R$ 6.750 por mês de atividade, com tolerância de 20%.</span></label>
+    <label id="wCot" class="hide">Cotação do dólar (R$ por US$ 1)<input id="cCot" type="number" inputmode="decimal" min="0" step="0.0001" value="5.5"></label>
+    <label id="wFrExt" class="hide">Frete e seguro internacionais (US$)<input id="cFreteExt" type="number" inputmode="decimal" min="0" step="0.01" value="0"></label>
+    <label id="wIof" class="wide hide">Forma de pagamento<select id="cIof"><option value="cartao">Cartão internacional (IOF 3,5%)</option><option value="outro">Outro meio (sem IOF)</option></select></label>
+    <label id="wII" class="wide hide">Imposto de importação manual (%)<input id="cII" type="number" inputmode="decimal" min="0" max="100" step="0.1" value="" placeholder="automático"><span>Deixe vazio para a regra do Remessa Conforme, pessoa física (Portaria MF 1.342/2026): até US$ 50, 0%; de US$ 50,01 a US$ 3.000, 60% com desconto de US$ 30. Frete e seguro entram no valor aduaneiro. Preencha só para outro regime ou acima de US$ 3.000.</span></label>
     <label class="sellOnly" id="wMargem">Margem de lucro (% do preço)<input id="cMargem" type="number" inputmode="decimal" min="0" max="99" step="0.5" value="0"></label>
     <p class="glabel sellOnly">Custos de venda</p>
     <label class="sellOnly">Comissão marketplace (%)<input id="cCom" type="number" inputmode="decimal" min="0" max="99" step="0.1" value="0" placeholder="ex.: 12"></label>
@@ -143,14 +156,14 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
    <div class="result-sub" id="rSub"></div>
    <table class="data-table"><tbody id="rRows"></tbody></table>
   </div>
-  <p class="note">Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação, porque são compensáveis. No MEI, o DAS é fixo por mês (valores de 2026, salário mínimo de R$ 1.621) e entra no preço dividido pelas vendas do mês; o limite de faturamento é de R$ 81 mil por ano.</p>
+  <p class="note"><strong>Estimativa com alíquotas verificadas em 30/09/2026; não substitui contador.</strong> Alíquotas preenchidas com valores de referência, todas editáveis. ICMS por dentro; PIS/Cofins sobre a base sem ICMS; IPI e imposto de importação por fora. Margem, comissão e taxa de pagamento são percentuais do preço final. CBS/IBS de 2026 aparecem só como informação (dispensa de recolhimento para quem cumpre as obrigações acessórias) e só para Presumido e Real; no Simples e no MEI entram a partir de 2027. No Lucro Presumido, o preço inclui IRPJ/CSLL pela presunção do comércio. No MEI, o DAS é fixo por mês (valores de 2026, salário mínimo de R$ 1.621) e entra no preço dividido pelas vendas do mês; o limite é R$ 81 mil por ano (R$ 251,6 mil para caminhoneiro), proporcional no ano de abertura e com tolerância de 20%.</p>
  </section>
 
  <section id="viewCat" hidden aria-labelledby="cat-title">
  <header class="app-head">
   <div class="vp-bar" data-vault-profile-slot></div>
   <div class="app-head-text">
-   <div class="eyebrow">TAXÔMETRO · CATÁLOGO · 22/09/2026</div>
+   <div class="eyebrow">TAXÔMETRO · CATÁLOGO · 30/09/2026</div>
    <h1 id="cat-title">Taxas e tributos do Brasil</h1>
    <p class="lede">Principais tributos federais, estaduais e municipais, com alíquotas gerais e a base de cálculo.</p>
   </div>
@@ -178,5 +191,6 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-
 <script src="financ-icons.js"></script>
 <script src="secure-vault.js"></script>
 <script src="secure-ui.js"></script>
+<script src="tax-engine.js"></script>
 <script src="app.js"></script>
 </body></html>
