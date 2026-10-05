@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.10.1" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.10.2" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -22,6 +22,8 @@
 @media (prefers-color-scheme:light){:root{--bg:#F7FAF8;--surface:#FFFFFF;--surface-2:#EFF4F0;--line:#DCE6E0;--ink:#16211B;--ink-dim:#667F72;--accent:#2E8B57;--accent-dim:#4EA976;--up:#2E8B57;--down:#C1584A;--warn:#9A7B2E;--info:#3F6E9E}}
 *{box-sizing:inherit}
 html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
+.page{overflow-wrap:break-word}
+.page>section{min-width:0}
 .page{max-width:480px;margin:0 auto;padding:24px 18px calc(110px + env(safe-area-inset-bottom,0px))}
 .eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:6px}
 h1{font-size:26px;font-weight:700;margin:0 0 4px}
@@ -58,12 +60,12 @@ input::placeholder{color:var(--ink-dim);opacity:.7}
 .result-main{font-family:var(--mono);font-size:clamp(30px,9vw,40px);font-weight:600;color:var(--accent);margin:6px 0 4px;letter-spacing:-.5px}
 .result-sub{font-family:var(--mono);font-size:12px;color:var(--ink-dim);line-height:1.5}
 table.data-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
-table.data-table td{padding:10px 6px;border-bottom:1px solid var(--line)}
-table.data-table td:last-child{text-align:right;font-family:var(--mono);white-space:nowrap}
+table.data-table td{padding:10px 6px;border-bottom:1px solid var(--line);overflow-wrap:anywhere;vertical-align:top}
+table.data-table td:last-child:not([colspan]){text-align:right;font-family:var(--mono);white-space:nowrap;overflow-wrap:normal}
 table.data-table tr.sub td{color:var(--ink-dim)}
 table.data-table tr.total td{font-weight:600}
 table.data-table tr.total td:last-child{color:var(--accent)}
-table.data-table tr.info td{border-bottom:none;font-size:11.5px;color:var(--ink-dim);font-family:var(--mono)}
+table.data-table tr.info td{border-bottom:none;font-size:11.5px;line-height:1.5;color:var(--ink-dim);font-family:var(--mono)}
 .note{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.55;margin:14px 0 0}
 .filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 4px}
 .filters input{grid-column:1/-1}
