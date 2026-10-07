@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Systekna - Painel Administrativo Fiscal</title>
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+
+  <div class="glass-panel">
+    <div class="header">
+      <h1>Oráculo Fiscal · Gerenciamento</h1>
+      <span class="badge-admin">SESSÃO: SECURE</span>
+    </div>
+
+    <div class="form-grid">
+      <div class="form-group">
+        <label>IOF Cartão Internacional (%)</label>
+        <input type="number" id="iofCartao" step="0.01" value="3.50">
+      </div>
+      <div class="form-group">
+        <label>CBS (Transição 2026) (%)</label>
+        <input type="number" id="cbsRate" step="0.01" value="0.90">
+      </div>
+      <div class="form-group full">
+        <label>Limite Proporcional MEI (R$ / mês)</label>
+        <input type="number" id="meiLimit" step="10" value="6750.00">
+      </div>
+      <div class="form-group full">
+        <label>Token de Autorização Administrativa</label>
+        <input type="text" id="adminToken" placeholder="systekna-admin-token-***" type="password">
+      </div>
+    </div>
+
+    <button class="btn" onclick="salvarTaxas()">Sincronizar com Servidor MCP</button>
+    <button class="btn btn-danger" onclick="location.href='../src/index.html'">Voltar para Calculadora</button>
+
+    <div id="statusMsg"></div>
+
+    <div class="telemetry">
+      <label>Telemetria do Motor Fiscal</label>
+      <div class="telemetry-grid">
+        <div class="stat-card">
+          <label>Consultas MEI</label>
+          <div class="stat-value">14.2k</div>
+        </div>
+        <div class="stat-card">
+          <label>Consultas IOF</label>
+          <div class="stat-value">8.9k</div>
+        </div>
+        <div class="stat-card">
+          <label>Latência MCP</label>
+          <div class="stat-value">24ms</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="admin.js"></script>
+</body>
+</html>
