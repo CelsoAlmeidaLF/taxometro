@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR" class="vault-locked">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Taxômetro - WebAdmin</title>
+  <link rel="stylesheet" href="fonts/fonts.css">
+  <link rel="stylesheet" href="index.css">
+  <link rel="stylesheet" href="stk-pkg-secure-ui.css">
+</head>
+<body>
+  <div class="wrap" id="appWrap">
+    <header class="app-head">
+      <div class="vp-bar" data-vault-profile-slot></div>
+      <div class="app-head-text">
+        <div class="eyebrow" id="headEyebrow">TAXÔMETRO · WEBADMIN</div>
+        <h1 id="headTitle">Gestão de Tarifas</h1>
+        <p class="lede" id="headLede">Administração das bandeiras e regras do sistema.</p>
+      </div>
+    </header>
+
+    <div class="card" style="margin-top: 20px;">
+      <h2>Configuração Regional</h2>
+      <form id="adminRatesForm">
+        <div class="input-row">
+          <label>Código da Região</label>
+          <input type="text" id="regionCode" placeholder="ex: SP-SAO_PAULO" required pattern="^[A-Z]{2}-[A-Z0-9_]{3,20}$">
+        </div>
+        <div class="input-row">
+          <label>Bandeirada (R$)</label>
+          <input type="number" id="baseFare" placeholder="0.00" step="0.01" min="0.01" max="100.00" required>
+        </div>
+        <div class="input-row">
+          <label>Bandeira 1 (R$/Km)</label>
+          <input type="number" id="flag1" placeholder="0.00" step="0.01" min="0.01" max="50.00" required>
+        </div>
+        <div class="input-row">
+          <label>Bandeira 2 (R$/Km)</label>
+          <input type="number" id="flag2" placeholder="0.00" step="0.01" min="0.01" max="50.00" required>
+        </div>
+        <div class="input-row">
+          <label>Hora Parada (R$/h)</label>
+          <input type="number" id="standingHour" placeholder="0.00" step="0.01" min="0.01" max="200.00" required>
+        </div>
+        <div class="input-row">
+          <label>Data de Vigência</label>
+          <input type="datetime-local" id="effectiveDate" required>
+        </div>
+        <button type="submit" class="submit-btn" style="margin-top:16px;">Salvar Tarifas no Servidor</button>
+      </form>
+      <div class="status" id="adminStatus" style="margin-top:10px; color:var(--warn);"></div>
+    </div>
+  </div>
+
+<script src="stk-pkg-financ-icons.js"></script>
+<script src="stk-pkg-secure-vault.js"></script>
+<script src="stk-pkg-secure-ui.js"></script>
+<script src="infrastructure/AdminAdapter.js"></script>
+<script src="admin.js"></script>
+</body>
+</html>

@@ -220,11 +220,20 @@ document.querySelectorAll('.filters input,.filters select').forEach(e=>e.addEven
  }
  const setMode=m=>{mode=m;$('mSell').setAttribute('aria-pressed',m==='sell');$('mBuy').setAttribute('aria-pressed',m==='buy');toggle();calc()};
  $('mSell').onclick=()=>setMode('sell');$('mBuy').onclick=()=>setMode('buy');
- $('cReg').addEventListener('input',()=>{setReg();calc()});
- $('cUf').addEventListener('input',()=>{setIcms();calc()});
- $('cAnexo').addEventListener('input',()=>{toggle();calc()});
- ['cMeiAt','cMeiTipo'].forEach(id=>$(id).addEventListener('input',()=>{setDas();calc()}));
- document.querySelectorAll('.cgrid input,.cgrid select').forEach(e=>e.addEventListener('input',calc));
+
+ const UiEvents = {
+   cReg_input: ()=>{setReg();calc()},
+   cUf_input: ()=>{setIcms();calc()},
+   cAnexo_input: ()=>{toggle();calc()},
+   mei_input: ()=>{setDas();calc()},
+   calc_input: calc
+ };
+
+ $('cReg').addEventListener('input', UiEvents.cReg_input);
+ $('cUf').addEventListener('input', UiEvents.cUf_input);
+ $('cAnexo').addEventListener('input', UiEvents.cAnexo_input);
+ ['cMeiAt','cMeiTipo'].forEach(id=>$(id).addEventListener('input', UiEvents.mei_input));
+ document.querySelectorAll('.cgrid input,.cgrid select').forEach(e=>e.addEventListener('input', UiEvents.calc_input));
  setReg();setDas();calc();
 })();
 
@@ -234,5 +243,6 @@ if('serviceWorker' in navigator){addEventListener('load',()=>navigator.serviceWo
 // ---- Navegação entre telas ----
 (()=>{const views={calc:document.getElementById('viewCalc'),cat:document.getElementById('viewCat')};
  const go=v=>{if(!views[v])v='calc';Object.entries(views).forEach(([k,el])=>el.hidden=k!==v);document.querySelectorAll('.nav-item').forEach(b=>{const on=b.dataset.view===v;b.classList.toggle('active',on);b.setAttribute('aria-current',on?'page':'false')});scrollTo(0,0)};
- document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>{history.replaceState(null,'','#'+b.dataset.view);go(b.dataset.view)}));
+ const UiEventsNav = { navItem_click: (b)=>{history.replaceState(null,'','#'+b.dataset.view);go(b.dataset.view)} };
+ document.querySelectorAll('.nav-item').forEach(b=>b.addEventListener('click',()=>UiEventsNav.navItem_click(b)));
  go(location.hash.slice(1));})();
