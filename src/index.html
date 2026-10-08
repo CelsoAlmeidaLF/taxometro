@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.10.2" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.12.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -16,77 +16,11 @@
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="apple-mobile-web-app-title" content="Taxômetro">
   <title>Taxômetro — preço com e sem impostos</title>
+  <!-- Log de erros: primeiro script, para pegar erros desde o início -->
+  <script src="apoio/stk-pkg-erros.js" data-app="TAXOMETRO"></script>
   <link rel="stylesheet" href="fonts/fonts.css">
-<style>
-:root{--bg:#0E1210;--surface:#171D1A;--surface-2:#202824;--line:#2C3733;--ink:#EAF0EC;--ink-dim:#8FA098;--accent:#6FCF97;--accent-dim:#4A8A67;--up:#6FCF97;--down:#E08585;--warn:#E0C185;--info:#7FA6CF;--mono:'IBM Plex Mono',ui-monospace,Menlo,Consolas,monospace;--sans:'Space Grotesk',system-ui,-apple-system,'Segoe UI',sans-serif;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px)}
-@media (prefers-color-scheme:light){:root{--bg:#F7FAF8;--surface:#FFFFFF;--surface-2:#EFF4F0;--line:#DCE6E0;--ink:#16211B;--ink-dim:#667F72;--accent:#2E8B57;--accent-dim:#4EA976;--up:#2E8B57;--down:#C1584A;--warn:#9A7B2E;--info:#3F6E9E}}
-*{box-sizing:inherit}
-html,body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-text-size-adjust:100%}
-.page{overflow-wrap:break-word}
-.page>section{min-width:0}
-.page{max-width:480px;margin:0 auto;padding:24px 18px calc(110px + env(safe-area-inset-bottom,0px))}
-.eyebrow{font-family:var(--mono);font-size:12px;color:var(--accent);margin-bottom:6px}
-h1{font-size:26px;font-weight:700;margin:0 0 4px}
-.lede{font-family:var(--mono);font-size:12px;color:var(--ink-dim);margin:0 0 8px;line-height:1.5}
-h2{font-size:15px;font-weight:600;color:var(--ink-dim);margin:30px 0 12px;padding-bottom:8px;border-bottom:1px solid var(--line)}
-.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
-.col-gap{display:flex;flex-direction:column;gap:10px}
-.row-gap{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.btn{font-family:var(--mono);font-size:14px;padding:12px 18px;border-radius:999px;border:none;cursor:pointer;text-decoration:none;display:inline-block}
-.btn-primary{background:var(--accent);color:var(--bg);font-weight:600}
-.btn-secondary{background:var(--surface-2);color:var(--ink);border:1px solid var(--line)}
-.btn-ghost{background:none;color:var(--accent);padding:8px 0}
-.seg{display:flex;gap:8px;margin:18px 0 14px}
-.seg .btn{flex:1;background:var(--surface-2);color:var(--ink-dim);border:1px solid var(--line)}
-.seg .btn[aria-pressed=true]{background:var(--accent);color:var(--bg);border-color:var(--accent);font-weight:600}
-label.field-label,.cgrid label{display:flex;flex-direction:column;justify-content:space-between;gap:6px;min-width:0;font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
-select{font-size:14px!important;text-overflow:ellipsis}
-input[type=text],input[type=number],input[type=search],select{width:100%;background:var(--surface-2);border:1px solid var(--line);border-radius:8px;color:var(--ink);font-family:var(--mono);font-size:15px;padding:11px 12px}
-input[type=search]{border-radius:999px;padding-left:16px}
-input::placeholder{color:var(--ink-dim);opacity:.7}
-:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
-.cgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.cgrid .wide,.cgrid .glabel{grid-column:1/-1}
-.cgrid .glabel{margin:6px 0 0;padding-top:12px;border-top:1px solid var(--line);font-size:13px;font-weight:600;color:var(--ink)}
-.hide{display:none!important}
-.badge{display:inline-block;padding:3px 10px;border-radius:999px;font-family:var(--mono);font-size:11px;white-space:nowrap}
-.badge-pos{background:rgba(111,207,151,.15);color:var(--up)}.badge-neg{background:rgba(224,133,133,.15);color:var(--down)}.badge-warn{background:rgba(224,193,133,.15);color:var(--warn)}.badge-info{background:rgba(127,166,207,.15);color:var(--info)}.badge-neutral{background:var(--surface-2);color:var(--ink-dim);border:1px solid var(--line)}
-.alert{display:flex;gap:10px;align-items:flex-start;padding:13px 14px;border-radius:12px;font-size:13.5px;line-height:1.45}
-.alert-warn{background:rgba(224,193,133,.12);border:1px solid rgba(224,193,133,.3)}
-.alert-info{background:rgba(127,166,207,.12);border:1px solid rgba(127,166,207,.3)}
-.alert-error{background:rgba(224,133,133,.12);border:1px solid rgba(224,133,133,.3)}
-.result{margin-top:16px}
-.result-label{font-family:var(--mono);font-size:11px;color:var(--ink-dim)}
-.result-main{font-family:var(--mono);font-size:clamp(30px,9vw,40px);font-weight:600;color:var(--accent);margin:6px 0 4px;letter-spacing:-.5px}
-.result-sub{font-family:var(--mono);font-size:12px;color:var(--ink-dim);line-height:1.5}
-table.data-table{width:100%;border-collapse:collapse;font-size:13.5px;margin-top:14px}
-table.data-table td{padding:10px 6px;border-bottom:1px solid var(--line);overflow-wrap:anywhere;vertical-align:top}
-table.data-table td:last-child:not([colspan]){text-align:right;font-family:var(--mono);white-space:nowrap;overflow-wrap:normal}
-table.data-table tr.sub td{color:var(--ink-dim)}
-table.data-table tr.total td{font-weight:600}
-table.data-table tr.total td:last-child{color:var(--accent)}
-table.data-table tr.info td{border-bottom:none;font-size:11.5px;line-height:1.5;color:var(--ink-dim);font-family:var(--mono)}
-.note{font-family:var(--mono);font-size:11px;color:var(--ink-dim);line-height:1.55;margin:14px 0 0}
-.filters{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:16px 0 4px}
-.filters input{grid-column:1/-1}
-.count{font-family:var(--mono);font-size:12px;color:var(--accent);margin:12px 2px}
-#rows{display:flex;flex-direction:column;gap:10px}
-.tax{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:14px 16px}
-.tax-head{display:flex;gap:10px;align-items:flex-start;justify-content:space-between}
-.tax .info{min-width:0}
-.tax .name{font-size:15px;font-weight:600}
-.meta{font-family:var(--mono);font-size:11.5px;color:var(--ink-dim);margin-top:2px}
-.tax-value{font-family:var(--mono);font-size:15px;font-weight:600;color:var(--accent);margin:10px 0 2px}
-.tax-desc{font-size:13.5px;line-height:1.45;color:var(--ink);margin:8px 0 2px}
-.tax-link{font-size:12.5px}
-.empty-state{text-align:center;padding:30px 16px}.empty-state .icon{font-size:34px;margin-bottom:10px}.empty-state .title{font-size:16px;font-weight:600;margin-bottom:4px}.empty-state .desc{font-family:var(--mono);font-size:12.5px;color:var(--ink-dim)}
-.nav-wrap{position:fixed;left:0;right:0;bottom:0;padding:0 14px calc(12px + env(safe-area-inset-bottom,0px));pointer-events:none;z-index:20}
-.bottom-nav{pointer-events:auto;max-width:452px;margin:0 auto;display:flex;background:var(--surface);border:1px solid var(--line);border-radius:20px;padding:8px;box-shadow:0 -8px 30px rgba(0,0,0,.35)}
-.bottom-nav .nav-item{flex:1;text-align:center;padding:8px;border-radius:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);cursor:pointer;background:none;border:none}
-.bottom-nav .nav-item .ic{display:flex;justify-content:center;margin-bottom:3px}.ico{display:block;flex-shrink:0}.alert-icon{padding-top:1px}.ico-warn{color:var(--warn)}.ico-empty{color:var(--ink-dim);margin:0 auto}
-.bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
-</style>
-<link rel="stylesheet" href="secure-ui.css">
+<link rel="stylesheet" href="index.css">
+<link rel="stylesheet" href="stk-pkg-secure-ui.css">
 <link rel="stylesheet" href="apoio/apoio.css" id="dz-style">
 </head>
 <body>
@@ -99,6 +33,9 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;line-height:1.5;
    <div class="eyebrow">TAXÔMETRO · TRIBUTOS 2026</div>
    <h1 id="calc-title">Preço com e sem impostos</h1>
    <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
+   <div style="margin-top: 12px; display: flex; gap: 8px;">
+     <a href="dashboard.html" class="badge badge-warn" style="text-decoration:none">Consultoria MEI</a>
+   </div>
   </div>
  </header>
 
@@ -191,11 +128,11 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;line-height:1.5;
   <button type="button" class="nav-item" data-view="cat"><span class="ic"><svg class="ico" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v15H6.5A2.5 2.5 0 0 0 4 20.5z"/><path d="M4 20.5A2.5 2.5 0 0 0 6.5 23H20v-5"/><path d="M8.5 7.5h7M8.5 11h5"/></svg></span>Catálogo</button>
  </div>
 </nav>
-<script src="financ-icons.js"></script>
-<script src="secure-vault.js"></script>
-<script src="secure-ui.js"></script>
+<script src="stk-pkg-financ-icons.js"></script>
+<script src="stk-pkg-secure-vault.js"></script>
+<script src="stk-pkg-secure-ui.js"></script>
 <script src="tax-engine.js"></script>
 <script src="app.js"></script>
-<script src="apoio/feedback.js"></script>
-<script src="apoio/doacao.js" data-app="TAXOMETRO" data-flutuante="false"></script>
+<script src="apoio/stk-pkg-feedback.js"></script>
+<script src="apoio/stk-pkg-doacao.js" data-app="TAXOMETRO" data-flutuante="false"></script>
 </body></html>
