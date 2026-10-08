@@ -26,7 +26,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       try {
           const response = await AdminAdapter.updateRates(payload);
-          statusEl.textContent = `Sucesso! TxID: ${response.data.transaction_id} (${response.data.broadcast_status})`;
+          statusEl.textContent = `Tarifas válidas (região ${response.data.region_code}). Simulação: nada foi salvo, este WebAdmin é um protótipo sem servidor.`;
           statusEl.style.color = "var(--up)";
       } catch (err) {
           statusEl.textContent = err.message;
