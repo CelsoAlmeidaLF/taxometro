@@ -19,9 +19,9 @@ class AdminAdapter {
             throw new Error("MCP_INVALID_PARAMS: Bandeira 1 não pode ser maior que Bandeira 2.");
         }
         
-        // Simula chamada para Firebase / Backend MCP
-        console.log("Transmitting payload via MCP secure channel:", payload);
-        
+        // PROTÓTIPO: não existe backend. Nada é enviado nem salvo (requisito: dados só no aparelho).
+        // O retorno abaixo é simulado e a tela avisa isso ao usuário.
+
         return new Promise((resolve) => {
             setTimeout(() => {
                 resolve({
@@ -30,7 +30,7 @@ class AdminAdapter {
                         transaction_id: "tx_" + Math.random().toString(36).substring(7),
                         region_code: payload.region_code,
                         updated_at: new Date().toISOString(),
-                        broadcast_status: "pending_sync"
+                        broadcast_status: "simulado"
                     }
                 });
             }, 800);
