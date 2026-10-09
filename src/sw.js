@@ -1,5 +1,5 @@
 // Troque a versão sempre que atualizar os arquivos, para o app baixar a nova versão.
-const CACHE = 'tributos-v1.16.3';
+const CACHE = 'tributos-v1.16.4';
 const FILES = ['./', './index.html', './index.css', './manifest.json', './icon-192.png', './icon-512.png', './icon-maskable-512.png', './apple-touch-icon.png', './favicon-32.png', './stk-pkg-bip39-pt.js', './stk-pkg-secure-vault.js', './stk-pkg-secure-ui.js','./stk-pkg-secure-ui.css', './stk-pkg-financ-icons.js', './tax-engine.js', './app.js', './apoio/apoio.css', './apoio/stk-pkg-doacao.js', './apoio/stk-pkg-feedback.js', './apoio/stk-pkg-erros.js', './apoio/stk-pkg-qrcode.js', './fonts/fonts.css', './fonts/ibm-plex-mono-latin-400.woff2', './fonts/ibm-plex-mono-latin-500.woff2', './fonts/ibm-plex-mono-latin-600.woff2', './fonts/ibm-plex-mono-latin-ext-400.woff2', './fonts/ibm-plex-mono-latin-ext-500.woff2', './fonts/ibm-plex-mono-latin-ext-600.woff2', './fonts/space-grotesk-latin-ext.woff2', './fonts/space-grotesk-latin.woff2'];
 
 self.addEventListener('install', e => {
