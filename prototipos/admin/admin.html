@@ -4,9 +4,9 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Taxômetro - WebAdmin</title>
-  <link rel="stylesheet" href="fonts/fonts.css">
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="stk-pkt-secure-ui.css">
+  <link rel="stylesheet" href="../../src/fonts/fonts.css">
+  <link rel="stylesheet" href="../../src/index.css">
+  <link rel="stylesheet" href="../../src/stk-pkt-secure-ui.css">
 </head>
 <body>
   <div class="wrap" id="appWrap">
@@ -19,7 +19,7 @@
       </div>
     </header>
 
-    <div class="card" style="margin-top: 20px;">
+    <div class="card mt-20">
       <h2>Configuração Regional</h2>
       <form id="adminRatesForm">
         <div class="input-row">
@@ -46,16 +46,16 @@
           <label>Data de Vigência</label>
           <input type="datetime-local" id="effectiveDate" required>
         </div>
-        <button type="submit" class="submit-btn" style="margin-top:16px;">Validar tarifas (simulação)</button>
+        <button type="submit" class="submit-btn mt-16">Validar tarifas (simulação)</button>
       </form>
-      <div class="status" id="adminStatus" style="margin-top:10px; color:var(--warn);"></div>
+      <div class="status status-warn mt-10" id="adminStatus"></div>
     </div>
   </div>
 
-<script src="stk-pkt-financ-icons.js"></script>
-<script src="stk-pkt-bip39-pt.js"></script>
-<script src="stk-pkt-secure-vault.js"></script>
-<script src="stk-pkt-secure-ui.js"></script>
+<script src="../../src/stk-pkt-financ-icons.js"></script>
+<script src="../../src/stk-pkt-bip39-pt.js"></script>
+<script src="../../src/stk-pkt-secure-vault.js"></script>
+<script src="../../src/stk-pkt-secure-ui.js"></script>
 <script src="infrastructure/AdminAdapter.js"></script>
 <script src="admin.js"></script>
 </body>

@@ -13,7 +13,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
       e.preventDefault();
       statusEl.textContent = "Processando contrato e validando schema...";
-      statusEl.style.color = "var(--ink)";
+      statusEl.className = "status status-info mt-10";
 
       const payload = {
           region_code: document.getElementById('regionCode').value.toUpperCase(),
@@ -27,10 +27,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       try {
           const response = await AdminAdapter.updateRates(payload);
           statusEl.textContent = `Tarifas válidas (região ${response.data.region_code}). Simulação: nada foi salvo, este WebAdmin é um protótipo sem servidor.`;
-          statusEl.style.color = "var(--up)";
+          statusEl.className = "status status-ok mt-10";
       } catch (err) {
           statusEl.textContent = err.message;
-          statusEl.style.color = "var(--warn)";
+          statusEl.className = "status status-warn mt-10";
       }
   });
 });

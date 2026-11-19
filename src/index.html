@@ -1,9 +1,9 @@
 <!doctype html>
-<html lang="pt-BR" class="vault-locked" data-vault-version="1.16.5" data-vault-app="taxometro" data-vault-name="Taxômetro">
+<html lang="pt-BR" class="vault-locked" data-vault-version="1.17.0" data-vault-app="taxometro" data-vault-name="Taxômetro">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://www.gstatic.com https://www.google.com; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self' https://firestore.googleapis.com https://content-firebaseappcheck.googleapis.com https://www.google.com; img-src 'self' data:; manifest-src 'self'; frame-src https://www.google.com; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self';">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; font-src 'self'; connect-src 'self'; img-src 'self' data:; manifest-src 'self'; frame-src https://systekna-ponte.web.app; object-src 'none'; base-uri 'self'; form-action 'self'; worker-src 'self';">
   <meta name="referrer" content="no-referrer">
   <meta name="theme-color" content="#0E1210">
   <meta name="description" content="Calculadora de preço com e sem impostos e catálogo de tributos do Brasil">
@@ -33,8 +33,8 @@
    <div class="eyebrow">TAXÔMETRO · TRIBUTOS 2026</div>
    <h1 id="calc-title">Preço com e sem impostos</h1>
    <p class="lede">Vendendo: quanto cobrar para cobrir custo, impostos, taxas e ter a margem desejada. Comprando: quanto do preço pago é produto e quanto é imposto.</p>
-   <div style="margin-top: 12px; display: flex; gap: 8px;">
-     <a href="dashboard.html" class="badge badge-warn" style="text-decoration:none">Consultoria MEI</a>
+   <div class="head-links">
+     <a href="dashboard.html" class="badge badge-warn">Consultoria MEI</a>
    </div>
   </div>
  </header>
@@ -113,7 +113,7 @@
    <input id="q" type="search" placeholder="Buscar nome, UF ou valor…" aria-label="Buscar">
    <select id="sphere" aria-label="Esfera"><option value="">Todas as esferas</option><option>NF-e / Comércio exterior</option><option>Federal</option><option>Estadual</option><option>Municipal</option></select>
    <select id="type" aria-label="Tipo"><option value="">Todos os tipos</option><option>Imposto</option><option>Taxa</option><option>Contribuição</option><option>Em transição</option></select>
-   <select id="uf" aria-label="UF" style="grid-column:1/-1"><option value="">Todas as UFs</option></select>
+   <select id="uf" class="col-full" aria-label="UF"><option value="">Todas as UFs</option></select>
   </section>
   <div class="count" id="count"></div>
   <div id="rows"></div>
@@ -133,7 +133,8 @@
 <script src="stk-pkt-secure-vault.js"></script>
 <script src="stk-pkt-secure-ui.js"></script>
 <script src="tax-engine.js"></script>
-<script src="app.js"></script>
+<script src="program.js"></script>
+<script src="apoio/stk-pkt-ponte.js"></script>
 <script src="apoio/stk-pkt-feedback.js"></script>
 <script src="apoio/stk-pkt-doacao.js" data-app="TAXOMETRO" data-flutuante="false"></script>
 </body></html>
