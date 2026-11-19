@@ -15,7 +15,7 @@
         <span class="badge-pro">ASSINANTE PRO</span>
       </header>
 
-      <p style="margin-bottom: 24px; font-size: 14px; color: var(--text-dim); line-height: 1.5;">
+      <p class="intro">
         Emita um laudo instantâneo sobre o seu enquadramento no MEI utilizando as regras oraculares mais recentes da Receita Federal.
       </p>
 
@@ -30,10 +30,13 @@
         </div>
       </div>
 
+      <div class="aviso" id="avisoCampos" role="alert"></div>
+      <div class="aviso" id="avisoRegras" role="status"></div>
+
       <button class="btn" onclick="gerarLaudo()">Gerar Laudo Oficial Systekna</button>
       
-      <div style="margin-top: 16px; text-align: center;">
-         <a href="index.html" style="color: var(--text-dim); font-size: 12px; font-family: var(--font-mono); text-decoration: none;">&larr; Voltar para Calculadora</a>
+      <div class="back-wrap">
+         <a href="index.html" class="back-link">&larr; Voltar para Calculadora</a>
       </div>
     </div>
 
@@ -55,7 +58,7 @@
         </div>
         <div class="data-item">
           <label>Última Atualização do Motor</label>
-          <div class="value" id="dataAtualizacao" style="font-size: 14px; margin-top: 8px;">Hoje</div>
+          <div class="value value-sm" id="dataAtualizacao">Hoje</div>
         </div>
       </div>
 
@@ -65,6 +68,7 @@
     </div>
   </div>
 
+  <script src="tax-engine.js"></script>
   <script src="dashboard.js"></script>
 </body>
 </html>

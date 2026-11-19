@@ -404,6 +404,23 @@
       return { value: v };
     },
 
+    /**
+     * Regras do laudo MEI guardadas no aparelho (SYSTEKNA_ORACULO_RATES). Nunca lança: texto ausente usa o padrão sem aviso;
+     * texto quebrado ou com campos fora do esperado usa o padrão e pede aviso ao usuário.
+     * Devolve { regras: { iof, meiLimit, updatedAt }, aviso: boolean }.
+     */
+    lerRegrasOraculo: function(raw, agoraISO) {
+      const padrao = { iof: 0.035, meiLimit: 6750, updatedAt: agoraISO };
+      if (raw == null || raw === '') return { regras: padrao, aviso: false };
+      let r;
+      try { r = JSON.parse(raw); } catch (_) { return { regras: padrao, aviso: true }; }
+      const ok = r && typeof r === 'object' && !Array.isArray(r) &&
+        Number.isFinite(r.iof) && r.iof >= 0 && r.iof <= 1 &&
+        Number.isFinite(r.meiLimit) && r.meiLimit > 0 &&
+        typeof r.updatedAt === 'string' && !Number.isNaN(new Date(r.updatedAt).getTime());
+      return ok ? { regras: { iof: r.iof, meiLimit: r.meiLimit, updatedAt: r.updatedAt }, aviso: false } : { regras: padrao, aviso: true };
+    },
+
     icmsImportacao: uf => (constants.icmsImport20.includes(String(uf).toUpperCase()) ? 0.20 : 0.17),
     iiRemessaUsd: usd => service._getIIRemessaUsd(usd),
     calcImport: o => service.calculateImport(o),

@@ -65,3 +65,14 @@ table.data-table tr.info td{border-bottom:none;font-size:11.5px;line-height:1.5;
 .bottom-nav .nav-item{flex:1;text-align:center;padding:8px;border-radius:14px;font-family:var(--mono);font-size:10.5px;color:var(--ink-dim);cursor:pointer;background:none;border:none}
 .bottom-nav .nav-item .ic{display:flex;justify-content:center;margin-bottom:3px}.ico{display:block;flex-shrink:0}.alert-icon{padding-top:1px}.ico-warn{color:var(--warn)}.ico-empty{color:var(--ink-dim);margin:0 auto}
 .bottom-nav .nav-item.active{background:var(--surface-2);color:var(--accent)}
+
+/* Classes que substituem style="" (HTML e JS) */
+.head-links{margin-top:12px;display:flex;gap:8px}
+a.badge{text-decoration:none}
+.col-full{grid-column:1/-1}
+.mt-10{margin-top:10px}
+.mt-16{margin-top:16px}
+.mt-20{margin-top:20px}
+.status-info{color:var(--ink)}
+.status-ok{color:var(--up)}
+.status-warn{color:var(--warn)}
