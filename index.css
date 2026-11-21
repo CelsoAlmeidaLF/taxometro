@@ -76,3 +76,37 @@ a.badge{text-decoration:none}
 .status-info{color:var(--ink)}
 .status-ok{color:var(--up)}
 .status-warn{color:var(--warn)}
+
+/* ==================== RESPONSIVIDADE MULTI-DISPOSITIVO (Mariana UI/UX) ==================== */
+/* 1. Mobile Pequeno (< 360px) */
+@media (max-width: 360px) {
+  .page { padding: 16px 10px calc(100px + env(safe-area-inset-bottom, 0px)); }
+  .cgrid { grid-template-columns: 1fr; }
+  .filters { grid-template-columns: 1fr; }
+  .seg { gap: 4px; }
+  .seg .btn { padding: 9px 8px; font-size: 12px; }
+  .result-main { font-size: clamp(24px, 8vw, 32px); }
+}
+
+/* 2. Tablets (641px - 1024px) */
+@media (min-width: 641px) {
+  .page { max-width: 760px; padding: 32px 24px calc(110px + env(safe-area-inset-bottom, 0px)); }
+  .bottom-nav { max-width: 580px; }
+  #rows { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+}
+
+/* 3. Telas Médias (1025px - 1440px) */
+@media (min-width: 1025px) {
+  .page { max-width: 1060px; padding: 40px 32px calc(120px + env(safe-area-inset-bottom, 0px)); }
+  .bottom-nav { max-width: 660px; }
+  #rows { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+  .card { padding: 24px; }
+}
+
+/* 4. Monitores Grandes e Ultrawide (> 1440px / 1920px - 4K) */
+@media (min-width: 1441px) {
+  .page { max-width: 1240px; margin: 0 auto; }
+  .bottom-nav { max-width: 720px; }
+  #rows { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+}
+
